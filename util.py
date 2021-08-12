@@ -67,6 +67,31 @@ def plaintext_response(thoughts):
     return plaintext
 
 
+def json_response(thoughts):
+    json = []
+
+    for thought in thoughts:
+        if thought.modality == 'language':
+            thought = {
+                'content': open(thought.filename, 'r').read(),
+                'modality': thought.modality,
+                'timestamp': thought.timestamp,
+                'interest': thought.interest,
+                'embedding': thought.embedding.tolist()
+            }
+        else:
+            thought = {
+                'content': '/' + thought.filename,
+                'modality': thought.modality,
+                'timestamp': thought.timestamp,
+                'interest': thought.interest,
+                'embedding': thought.embedding.tolist()
+            }
+
+        json += [thought]
+    return json
+
+
 def load_model():
     return SentenceTransformer('clip-ViT-B-32')
 
