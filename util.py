@@ -5,20 +5,23 @@ import pickle
 import os
 import time
 
+metadata_path = 'conceptarium/metadata.pickle'
+
 
 def init():
-    if not os.path.exists('conceptarium.db'):
-        pickle.dump(list(), open('conceptarium.db', 'wb'))
+    if not os.path.exists(metadata_path):
+        pickle.dump(list(), open(metadata_path, 'wb'))
 
 
-def add_thought(thought):
-    conceptarium = pickle.load(open('conceptarium.db', 'rb'))
+def attach_metadata(thought):
+    conceptarium = pickle.load(open(metadata_path, 'rb'))
     conceptarium += [thought]
-    pickle.dump(conceptarium, open('conceptarium.db', 'wb'))
+    pickle.dump(conceptarium, open(metadata_path, 'wb'))
 
 
 def get_thoughts(query, model):
-    conceptarium = pickle.load(open('conceptarium.db', 'rb'))
+    conceptarium = pickle.load(open(metadata_path, 'rb'))
+
     query_embedding = embed(query, model)
     query_modality = get_modality(query)
 
@@ -29,12 +32,28 @@ def get_thoughts(query, model):
         [query_embedding], corpus_embeddings, top_k=len(corpus_embeddings))[0]
     results = [e if modality_match[e['corpus_id']]
                else compensate_modality_mismatch(e) for e in results]
+    results = sorted(results, key=lambda x: x['score'], reverse=True)
+    corpus_ids = [e['corpus_id'] for e in results]
+    thoughts = [conceptarium[e] for e in corpus_ids][:10]
 
     # TODO propagate interest across other thoughts
     # TODO compute activation
     # TODO provde several default behaviors
 
-    return format_response(results, conceptarium)
+    return thoughts
+
+
+def html_response(thoughts):
+    html = ''
+
+    for thought in thoughts:
+        if thought.modality == 'language':
+            content = open(thought.filename, 'r').read()
+            html += '<p>' + content + '</p>'
+        else:
+            html += '<img src=\"/' + thought.filename + '\" width="20%">'
+
+    return html
 
 
 def load_model():
@@ -56,30 +75,13 @@ def get_modality(content):
 
 
 def compensate_modality_mismatch(result):
-    result['score'] *= 2.2
+    result['score'] *= 2.8
     return result
 
 
-def format_response(results, conceptarium):
-    results = sorted(results, key=lambda x: x['score'], reverse=True)
-    print(results)
-    corpus_ids = [e['corpus_id'] for e in results]
-    corpus_scores = [e['score'] for e in results]
-    return [{
-        'content': conceptarium[e].content,
-        'modality': conceptarium[e].modality,
-        'timestamp': conceptarium[e].timestamp,
-        'activation': corpus_scores[corpus_ids.index(e)]
-    } if conceptarium[e].modality == 'language' else {
-        'modality': conceptarium[e].modality,
-        'timestamp': conceptarium[e].timestamp,
-        'activation': corpus_scores[corpus_ids.index(e)]
-    } for e in corpus_ids]
-
-
 class Thought:
-    def __init__(self, content, model):
-        self.content = content
+    def __init__(self, filename, content, model):
+        self.filename = filename
         self.modality = get_modality(content)
         self.timestamp = time.time()
         self.interest = 1
