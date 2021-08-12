@@ -56,6 +56,17 @@ def html_response(thoughts):
     return html
 
 
+def plaintext_response(thoughts):
+    plaintext = ''
+
+    for thought in thoughts:
+        if thought.modality == 'language':
+            content = open(thought.filename, 'r').read()
+            plaintext += '\"' + content + '\"\n'
+
+    return plaintext
+
+
 def load_model():
     return SentenceTransformer('clip-ViT-B-32')
 
