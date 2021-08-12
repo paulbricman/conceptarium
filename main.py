@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File
 from fastapi.datastructures import UploadFile
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, FileResponse
 import secrets
 from pathlib import Path
 
@@ -43,6 +43,12 @@ async def remember_by_language_via_plaintext(content: str, behavior: str = 'bala
     return PlainTextResponse(plaintext_response(thoughts))
 
 
+@app.get("/rem/language/file")
+async def remember_by_language_via_file(content: str, behavior: str = 'balanced'):
+    thoughts = remember(content, model, behavior)
+    return FileResponse(file_response(thoughts))
+
+
 @app.get("/rem/language/json")
 async def remember_by_language_via_json(content: str, behavior: str = 'balanced'):
     thoughts = remember(content, model, behavior)
@@ -61,6 +67,13 @@ async def remember_by_imagery_via_plaintext(file: UploadFile = File(...), behavi
     content = await file.read()
     thoughts = remember(content, model, behavior)
     return PlainTextResponse(plaintext_response(thoughts))
+
+
+@app.post("/rem/imagery/file")
+async def remember_by_imagery_via_json(file: UploadFile = File(...), behavior: str = 'balanced'):
+    content = await file.read()
+    thoughts = remember(content, model, behavior)
+    return FileResponse(file_response(thoughts))
 
 
 @app.post("/rem/imagery/json")

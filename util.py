@@ -104,6 +104,12 @@ def plaintext_response(thoughts):
     return plaintext
 
 
+def file_response(thoughts):
+    for thought in thoughts:
+        if thought.modality == 'imagery':
+            return thought.filename
+
+
 def json_response(thoughts):
     json = []
 
