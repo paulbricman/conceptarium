@@ -4,7 +4,7 @@ from util import *
 
 app = FastAPI()
 model = load_model()
-init_conceptarium()
+init()
 
 
 @app.get("/add/text")
