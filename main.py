@@ -32,39 +32,39 @@ async def memorize_imagery(file: UploadFile = File(...)):
 
 
 @app.get("/rem/language/html")
-async def remember_by_language_via_html(content: str):
-    thoughts = get_thoughts(content, model)
+async def remember_by_language_via_html(content: str, behavior: str = 'balanced'):
+    thoughts = remember(content, model, behavior)
     return HTMLResponse(html_response(thoughts))
 
 
 @app.get("/rem/language/plaintext")
-async def remember_by_language_via_plaintext(content: str):
-    thoughts = get_thoughts(content, model)
+async def remember_by_language_via_plaintext(content: str, behavior: str = 'balanced'):
+    thoughts = remember(content, model, behavior)
     return PlainTextResponse(plaintext_response(thoughts))
 
 
 @app.get("/rem/language/json")
-async def remember_by_language_via_json(content: str):
-    thoughts = get_thoughts(content, model)
+async def remember_by_language_via_json(content: str, behavior: str = 'balanced'):
+    thoughts = remember(content, model, behavior)
     return json_response(thoughts)
 
 
 @app.post("/rem/imagery/html")
-async def remember_by_imagery_via_html(file: UploadFile = File(...)):
+async def remember_by_imagery_via_html(file: UploadFile = File(...), behavior: str = 'balanced'):
     content = await file.read()
-    thoughts = get_thoughts(content, model)
+    thoughts = remember(content, model, behavior)
     return HTMLResponse(html_response(thoughts))
 
 
 @app.post("/rem/imagery/plaintext")
-async def remember_by_imagery_via_plaintext(file: UploadFile = File(...)):
+async def remember_by_imagery_via_plaintext(file: UploadFile = File(...), behavior: str = 'balanced'):
     content = await file.read()
-    thoughts = get_thoughts(content, model)
+    thoughts = remember(content, model, behavior)
     return PlainTextResponse(plaintext_response(thoughts))
 
 
 @app.post("/rem/imagery/json")
-async def remember_by_imagery_via_json(file: UploadFile = File(...)):
+async def remember_by_imagery_via_json(file: UploadFile = File(...), behavior: str = 'balanced'):
     content = await file.read()
-    thoughts = get_thoughts(content, model)
+    thoughts = remember(content, model, behavior)
     return json_response(thoughts)
