@@ -6,6 +6,7 @@ import secrets
 from pathlib import Path
 
 from util import *
+from responses import *
 
 app = FastAPI()
 model = load_model()
@@ -18,7 +19,7 @@ app.mount("/conceptarium", StaticFiles(directory="conceptarium"))
 async def memorize_language(content: str):
     filename = 'conceptarium/' + secrets.token_urlsafe(8) + '.txt'
     open(filename, 'w').write(content)
-    attach_metadata(Thought(filename, content, model))
+    memorize(Thought(filename, content, model))
 
 
 @app.post("/mem/imagery")
@@ -28,7 +29,7 @@ async def memorize_imagery(file: UploadFile = File(...)):
     filename = 'conceptarium/' + \
         secrets.token_urlsafe(8) + extension
     open(filename, 'wb+').write(content)
-    attach_metadata(Thought(filename, content, model))
+    memorize(Thought(filename, content, model))
 
 
 @app.get("/rem/language/html")
