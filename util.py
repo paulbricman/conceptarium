@@ -20,7 +20,7 @@ def memorize(thought):
     pickle.dump(conceptarium, open(metadata_path, 'wb'))
 
 
-def remember(query, model, behavior='balanced'):
+def remember(query, model, behavior='balanced', top_k=50):
     conceptarium = pickle.load(open(metadata_path, 'rb'))
 
     query_embedding = embed(query, model)
@@ -37,8 +37,6 @@ def remember(query, model, behavior='balanced'):
     for result in results:
         conceptarium[result['corpus_id']].interest += result['score'] ** 4
     pickle.dump(conceptarium, open(metadata_path, 'wb'))
-
-    print('BEHAVIOR', behavior)
 
     for idx, result in enumerate(results):
         if behavior == 'balanced':
@@ -67,7 +65,7 @@ def remember(query, model, behavior='balanced'):
 
     results = sorted(
         results, key=lambda result: result['activation'], reverse=True)
-    memories = [conceptarium[e['corpus_id']] for e in results][:10]
+    memories = [conceptarium[e['corpus_id']] for e in results][:top_k]
     return memories
 
 
