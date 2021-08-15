@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, PlainTextResponse, FileResponse
 import secrets
 from pathlib import Path
+from typing import Optional
 
 from util import *
 from responses import *
@@ -33,52 +34,52 @@ async def memorize_imagery(file: UploadFile = File(...)):
 
 
 @app.get("/rem/language/html")
-async def remember_by_language_via_html(content: str, behavior: str, top_k: int = 50):
+async def remember_by_language_via_html(content: str, behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     thoughts = remember(content, model, behavior, top_k)
     return HTMLResponse(html_response(thoughts))
 
 
 @app.get("/rem/language/plaintext")
-async def remember_by_language_via_plaintext(content: str, behavior: str, top_k: int = 50):
+async def remember_by_language_via_plaintext(content: str, behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     thoughts = remember(content, model, behavior, top_k)
     return PlainTextResponse(plaintext_response(thoughts))
 
 
 @app.get("/rem/language/file")
-async def remember_by_language_via_file(content: str, behavior: str, top_k: int):
+async def remember_by_language_via_file(content: str, behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     thoughts = remember(content, model, behavior, top_k)
     return FileResponse(file_response(thoughts))
 
 
 @app.get("/rem/language/json")
-async def remember_by_language_via_json(content: str, behavior: str, top_k: int):
+async def remember_by_language_via_json(content: str, behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     thoughts = remember(content, model, behavior, top_k)
     return json_response(thoughts)
 
 
 @app.post("/rem/imagery/html")
-async def remember_by_imagery_via_html(file: UploadFile = File(...), behavior: str = 'balanced', top_k: int = 50):
+async def remember_by_imagery_via_html(file: UploadFile = File(...), behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = remember(content, model, behavior, top_k)
     return HTMLResponse(html_response(thoughts))
 
 
 @app.post("/rem/imagery/plaintext")
-async def remember_by_imagery_via_plaintext(file: UploadFile = File(...), behavior: str = 'balanced', top_k: int = 50):
+async def remember_by_imagery_via_plaintext(file: UploadFile = File(...), behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = remember(content, model, behavior, top_k)
     return PlainTextResponse(plaintext_response(thoughts))
 
 
 @app.post("/rem/imagery/file")
-async def remember_by_imagery_via_json(file: UploadFile = File(...), behavior: str = 'balanced', top_k: int = 50):
+async def remember_by_imagery_via_json(file: UploadFile = File(...), behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = remember(content, model, behavior, top_k)
     return FileResponse(file_response(thoughts))
 
 
 @app.post("/rem/imagery/json")
-async def remember_by_imagery_via_json(file: UploadFile = File(...), behavior: str = 'balanced', top_k: int = 50):
+async def remember_by_imagery_via_json(file: UploadFile = File(...), behavior: Optional[str] = 'balanced', top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = remember(content, model, behavior, top_k)
     return json_response(thoughts)
