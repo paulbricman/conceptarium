@@ -34,7 +34,6 @@ async def memorize_imagery(file: UploadFile = File(...)):
 
 @app.get("/rem/language/html")
 async def remember_by_language_via_html(content: str, behavior: str, top_k: int = 50):
-    print('HANDLER BEHAVIOR', behavior)
     thoughts = remember(content, model, behavior, top_k)
     return HTMLResponse(html_response(thoughts))
 

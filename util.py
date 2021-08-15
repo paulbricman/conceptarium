@@ -65,6 +65,7 @@ def remember(query, model, behavior='balanced', top_k=50):
 
     results = sorted(
         results, key=lambda result: result['activation'], reverse=True)
+    print(results)
     memories = [conceptarium[e['corpus_id']] for e in results][:top_k]
     return memories
 
@@ -88,7 +89,7 @@ def get_modality(content):
 
 
 def compensate_modality_mismatch(result):
-    result['score'] *= 3
+    result['score'] *= 3.2
     return result
 
 

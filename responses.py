@@ -1,9 +1,10 @@
 def html_response(thoughts):
     html = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">'
-    html += '<div style="padding-top: 2rem">'
+    html += '<link rel="stylesheet" type="text/css" href="/conceptarium/style.css" media="screen" />'
+    html += '<div class="board">'
 
     for thought in thoughts:
-        html += '<div class="card" style="width: 24rem; margin: 0 auto; margin-bottom: 1rem;">'
+        html += '<div class="card">'
         if thought.modality == 'language':
             content = open(thought.filename, 'r').read()
             html += '<div class="card-body">' + content + '</div>'
