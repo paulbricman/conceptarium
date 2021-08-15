@@ -41,27 +41,27 @@ def remember(query, model, behavior='balanced', top_k=50):
     for idx, result in enumerate(results):
         if behavior == 'balanced':
             results[idx]['activation'] = (result['score']
-                                          + 0.1 *
+                                          + 0.02 *
                                           (np.log(
                                               conceptarium[result['corpus_id']].interest / (1 - 0.9))
                                            - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
-                * np.random.normal(1, 0.1)
+                * np.random.normal(1, 0.05)
         elif behavior == 'antimemory':
             results[idx]['activation'] = (result['score']
-                                          - 0.1 *
+                                          - 0.02 *
                                           (np.log(
                                               conceptarium[result['corpus_id']].interest / (1 - 0.9))
                                            + 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
-                * np.random.normal(1, 0.1)
+                * np.random.normal(1, 0.05)
         elif behavior == 'contextonly':
             results[idx]['activation'] = result['score']
         elif behavior == 'noisy':
             results[idx]['activation'] = (result['score']
-                                          + 0.1 *
+                                          + 0.02 *
                                           (np.log(
                                               conceptarium[result['corpus_id']].interest / (1 - 0.9))
                                            - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
-                * np.random.normal(1, 0.5)
+                * np.random.normal(1, 0.2)
 
     results = sorted(
         results, key=lambda result: result['activation'], reverse=True)
@@ -89,7 +89,7 @@ def get_modality(content):
 
 
 def compensate_modality_mismatch(result):
-    result['score'] *= 3.2
+    result['score'] *= 3.5
     return result
 
 
