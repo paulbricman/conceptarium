@@ -10,7 +10,7 @@ def html_response(thoughts):
             html += '<div class="card-body">' + content + '</div>'
         else:
             html += '<img class="card-img" src=\"/' + \
-                thought.filename + '\" width="100%">'
+                thought.filename + '\">'
         html += '</div>'
 
     html += '</div>'
