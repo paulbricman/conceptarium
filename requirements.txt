@@ -1,0 +1,5 @@
+sentence_transformers==2.0.0
+numpy==1.21.1
+fastapi==0.68.0
+Pillow==8.3.1
+secrets==1.0.2
