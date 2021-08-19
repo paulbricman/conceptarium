@@ -47,7 +47,7 @@ body {
   text-align: left;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1200px) {
   .card {
     width: calc(100% - 20px);
     margin-bottom: 0px;
