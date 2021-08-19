@@ -5,6 +5,7 @@ import pickle
 import os
 import time
 import numpy as np
+import pprint
 
 metadata_path = 'conceptarium/metadata.pickle'
 
@@ -42,14 +43,13 @@ def find(query, model, relatedness, activation, noise, silent, top_k):
     for idx, result in enumerate(results):
         results[idx]['score'] = (relatedness * result['score']
                                  + activation *
-                                 (np.log(conceptarium[result['corpus_id']].interest / (1 - 0.9)) - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
+                                 (np.log(conceptarium[result['corpus_id']].interest / (1 - 0.9)) - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / (3600 * 24) + 0.1))) \
             * np.random.normal(1, noise)
 
-        results = sorted(
-            results, key=lambda result: result['score'], reverse=True)
-        print(results)
-        memories = [conceptarium[e['corpus_id']] for e in results][:top_k]
-        return memories
+    results = sorted(
+        results, key=lambda result: result['score'], reverse=True)
+    memories = [conceptarium[e['corpus_id']] for e in results][:top_k]
+    return memories
 
 
 def load_model():
