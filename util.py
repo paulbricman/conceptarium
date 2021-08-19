@@ -30,7 +30,7 @@ def remember(query, model, behavior='balanced', top_k=50):
     corpus_embeddings = [e.embedding for e in conceptarium]
 
     results = util.semantic_search(
-        [query_embedding], corpus_embeddings, top_k=len(corpus_embeddings))[0]
+        [query_embedding], corpus_embeddings, top_k=len(corpus_embeddings), score_function=util.dot_score)[0]
     results = [e if modality_match[e['corpus_id']]
                else compensate_modality_mismatch(e) for e in results]
 
@@ -76,9 +76,9 @@ def load_model():
 
 def embed(content, model):
     if get_modality(content) == 'language':
-        return model.encode(content, convert_to_tensor=True)
+        return model.encode(content, convert_to_tensor=True, normalize_embeddings=True)
     else:
-        return model.encode(Image.open(io.BytesIO(content)), convert_to_tensor=True)
+        return model.encode(Image.open(io.BytesIO(content)), convert_to_tensor=True, normalize_embeddings=True)
 
 
 def get_modality(content):
@@ -89,7 +89,7 @@ def get_modality(content):
 
 
 def compensate_modality_mismatch(result):
-    result['score'] *= 3.5
+    result['score'] *= 2.5
     return result
 
 

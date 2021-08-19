@@ -1,0 +1,1 @@
+A folded paper is like a 2D manifold embedded in 3D space. If you're *on* the paper, it seems flat, but for an outside observer it's clearly 3D.
