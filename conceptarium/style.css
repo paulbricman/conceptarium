@@ -51,5 +51,6 @@ body {
   .card {
     width: calc(100% - 20px);
     margin-bottom: 0px;
+    font-size: 28;
   }
 }

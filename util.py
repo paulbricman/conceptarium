@@ -14,13 +14,13 @@ def init():
         pickle.dump(list(), open(metadata_path, 'wb'))
 
 
-def memorize(thought):
+def save(thought):
     conceptarium = pickle.load(open(metadata_path, 'rb'))
     conceptarium += [thought]
     pickle.dump(conceptarium, open(metadata_path, 'wb'))
 
 
-def remember(query, model, behavior='balanced', top_k=50):
+def find(query, model, relatedness, activation, noise, silent, top_k):
     conceptarium = pickle.load(open(metadata_path, 'rb'))
 
     query_embedding = embed(query, model)
@@ -34,40 +34,22 @@ def remember(query, model, behavior='balanced', top_k=50):
     results = [e if modality_match[e['corpus_id']]
                else compensate_modality_mismatch(e) for e in results]
 
-    for result in results:
-        conceptarium[result['corpus_id']].interest += result['score'] ** 4
-    pickle.dump(conceptarium, open(metadata_path, 'wb'))
+    if not silent:
+        for result in results:
+            conceptarium[result['corpus_id']].interest += result['score'] ** 4
+        pickle.dump(conceptarium, open(metadata_path, 'wb'))
 
     for idx, result in enumerate(results):
-        if behavior == 'balanced':
-            results[idx]['activation'] = (result['score']
-                                          + 0.02 *
-                                          (np.log(
-                                              conceptarium[result['corpus_id']].interest / (1 - 0.9))
-                                           - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
-                * np.random.normal(1, 0.05)
-        elif behavior == 'antimemory':
-            results[idx]['activation'] = (result['score']
-                                          - 0.02 *
-                                          (np.log(
-                                              conceptarium[result['corpus_id']].interest / (1 - 0.9))
-                                           + 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
-                * np.random.normal(1, 0.05)
-        elif behavior == 'contextonly':
-            results[idx]['activation'] = result['score']
-        elif behavior == 'noisy':
-            results[idx]['activation'] = (result['score']
-                                          + 0.02 *
-                                          (np.log(
-                                              conceptarium[result['corpus_id']].interest / (1 - 0.9))
-                                           - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
-                * np.random.normal(1, 0.2)
+        results[idx]['score'] = (relatedness * result['score']
+                                 + activation *
+                                 (np.log(conceptarium[result['corpus_id']].interest / (1 - 0.9)) - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / 3600))) \
+            * np.random.normal(1, noise)
 
-    results = sorted(
-        results, key=lambda result: result['activation'], reverse=True)
-    print(results)
-    memories = [conceptarium[e['corpus_id']] for e in results][:top_k]
-    return memories
+        results = sorted(
+            results, key=lambda result: result['score'], reverse=True)
+        print(results)
+        memories = [conceptarium[e['corpus_id']] for e in results][:top_k]
+        return memories
 
 
 def load_model():
