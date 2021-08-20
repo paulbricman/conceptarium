@@ -36,25 +36,20 @@ def file_response(thoughts):
 
 
 def json_response(thoughts):
-    json = []
+    response_json = []
 
     for thought in thoughts:
-        if thought.modality == 'language':
-            thought = {
-                'content': open(thought.filename, 'r').read(),
-                'modality': thought.modality,
-                'timestamp': thought.timestamp,
-                'interest': thought.interest,
-                'embedding': thought.embedding.tolist()
-            }
-        else:
-            thought = {
-                'content': '/' + thought.filename,
-                'modality': thought.modality,
-                'timestamp': thought.timestamp,
-                'interest': thought.interest,
-                'embedding': thought.embedding.tolist()
-            }
+        thought_json = {
+            'timestamp': thought.timestamp,
+            'interest': thought.interest,
+            'modality': thought.modality,
+            'embedding': thought.embedding.tolist(),
+        }
 
-        json += [thought]
-    return json
+        if thought.modality == 'language':
+            thought_json['content'] = open(thought.filename, 'r').read()
+        else:
+            thought_json['filename'] = '/' + thought.filename
+
+        response_json += [thought_json]
+    return response_json
