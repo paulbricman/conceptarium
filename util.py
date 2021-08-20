@@ -63,6 +63,18 @@ def embed(content, model):
         return model.encode(Image.open(io.BytesIO(content)), convert_to_tensor=True, normalize_embeddings=True)
 
 
+def reset_embeddings(model):
+    conceptarium = pickle.load(open(metadata_path, 'rb'))
+    for thought_idx, thought in enumerate(conceptarium):
+        if thought.modality == 'language':
+            content = open(thought.filename, 'r').read()
+        else:
+            content = open(thought.filename, 'rb').read()
+        conceptarium[thought_idx].embedding = embed(content, model)
+
+    pickle.dump(conceptarium, open(metadata_path, 'wb'))
+
+
 def get_modality(content):
     if isinstance(content, str):
         return 'language'
