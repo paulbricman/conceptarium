@@ -1,5 +1,5 @@
 :root {
-  --custom-color: rgb(255, 108, 0);
+  --custom-color: rgb(241, 163, 75);
 }
 
 * {
@@ -23,10 +23,11 @@
   font-weight: bold;
   margin: 20px;
   font-size: 30;
+  color: white;
 }
 
 body {
-  background-color: azure;
+  background-color: rgb(19, 20, 24);
 }
 
 .card-image {
