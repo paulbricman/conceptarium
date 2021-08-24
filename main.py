@@ -18,9 +18,10 @@ app.mount('/conceptarium', StaticFiles(directory='conceptarium'))
 
 @app.get('/save/lang')
 async def save_language(content: str):
-    filename = 'conceptarium/' + secrets.token_urlsafe(8) + '.txt'
-    open(filename, 'w').write(content)
-    save(Thought(filename, content, model))
+    if len(content) > 3:
+        filename = 'conceptarium/' + secrets.token_urlsafe(8) + '.txt'
+        open(filename, 'w').write(content)
+        save(Thought(filename, content, model))
 
 
 @app.post('/save/imag')
