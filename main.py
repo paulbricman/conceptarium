@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File
+from fastapi import FastAPI, File, BackgroundTasks
 from fastapi.datastructures import UploadFile
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, PlainTextResponse, FileResponse
@@ -17,11 +17,12 @@ app.mount('/conceptarium', StaticFiles(directory='conceptarium'))
 
 
 @app.get('/save/lang')
-async def save_language(content: str):
+async def save_language(content: str, background_tasks: BackgroundTasks):
     if len(content) > 3:
         filename = 'conceptarium/' + secrets.token_urlsafe(8) + '.txt'
         open(filename, 'w').write(content)
-        save(Thought(filename, content, model))
+        background_tasks.add_task(save, Thought(filename, content, model))
+        return HTMLResponse(success_response())
 
 
 @app.post('/save/imag')
@@ -35,35 +36,35 @@ async def save_imagery(file: UploadFile = File(...)):
 
 
 @app.get('/find/lang/html')
-async def find_by_language_return_html(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_language_return_html(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)
     return HTMLResponse(html_response(thoughts))
 
 
 @app.get('/find/lang/text')
-async def find_by_language_return_plaintext(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_language_return_plaintext(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)
     return PlainTextResponse(plaintext_response(thoughts))
 
 
 @app.get('/find/lang/file')
-async def find_by_language_return_file(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_language_return_file(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)
     return FileResponse(file_response(thoughts))
 
 
 @app.get('/find/lang/json')
-async def find_by_language_return_json(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_language_return_json(content: str, relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)
     return json_response(thoughts)
 
 
 @app.post('/find/imag/html')
-async def find_by_imagery_return_html(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_imagery_return_html(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)
@@ -71,7 +72,7 @@ async def find_by_imagery_return_html(file: UploadFile = File(...), relatedness:
 
 
 @app.post('/find/imag/text')
-async def find_by_imagery_return_plaintext(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_imagery_return_plaintext(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)
@@ -79,7 +80,7 @@ async def find_by_imagery_return_plaintext(file: UploadFile = File(...), related
 
 
 @app.post('/find/imag/file')
-async def find_by_imagery_return_file(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_imagery_return_file(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)
@@ -87,7 +88,7 @@ async def find_by_imagery_return_file(file: UploadFile = File(...), relatedness:
 
 
 @app.post('/find/imag/json')
-async def find_by_imagery_return_json(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.05, silent: Optional[bool] = False, top_k: Optional[int] = 50):
+async def find_by_imagery_return_json(file: UploadFile = File(...), relatedness: Optional[float] = 1, activation: Optional[float] = 0, noise: Optional[float] = 0.02, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     content = await file.read()
     thoughts = find(content, model, relatedness,
                     activation, noise, silent, top_k)

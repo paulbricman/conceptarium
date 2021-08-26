@@ -18,6 +18,10 @@ def html_response(thoughts):
     return html
 
 
+def success_response():
+    return open('conceptarium/success.html').read()
+
+
 def plaintext_response(thoughts):
     plaintext = ''
 
