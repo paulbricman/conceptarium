@@ -108,7 +108,7 @@ def get_modality(content):
 
 
 def compensate_modality_mismatch(result):
-    result['score'] *= 2.8
+    result['score'] *= 2.5
     return result
 
 
