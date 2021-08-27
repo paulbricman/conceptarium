@@ -98,3 +98,8 @@ async def find_by_imagery_return_json(file: UploadFile = File(...), relatedness:
 @app.get('/rset/embs')
 async def reset_embeddings_handle():
     reset_embeddings(model)
+
+
+@app.get('/dump')
+async def dump_conceptarium():
+    return FileResponse(archive_response(), filename='conceptarium.zip')

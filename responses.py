@@ -1,3 +1,7 @@
+from util import get_doc_paths
+from zipfile import ZipFile
+
+
 def html_response(thoughts):
     html = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">'
     html += '<link rel="stylesheet" type="text/css" href="/conceptarium/style.css" media="screen" />'
@@ -20,6 +24,15 @@ def html_response(thoughts):
 
 def success_response():
     return open('conceptarium/success.html').read()
+
+
+def archive_response():
+    paths = get_doc_paths('conceptarium')
+    with ZipFile('conceptarium.zip', 'w') as zip:
+        for path in paths:
+            zip.write(path)
+
+    return 'conceptarium.zip'
 
 
 def plaintext_response(thoughts):

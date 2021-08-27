@@ -27,7 +27,8 @@ def save(thought):
                else compensate_modality_mismatch(e) for e in results]
 
     for result in results:
-        conceptarium[result['corpus_id']].interest += result['score'] ** 4
+        conceptarium[result['corpus_id']
+                     ].interest += min(result['score'], 1) ** 4
 
     conceptarium += [thought]
     pickle.dump(conceptarium, open(metadata_path, 'wb'))
@@ -49,7 +50,8 @@ def find(query, model, relatedness, activation, noise, silent, top_k):
 
     if not silent:
         for result in results:
-            conceptarium[result['corpus_id']].interest += result['score'] ** 4
+            conceptarium[result['corpus_id']
+                         ].interest += min(result['score'], 1) ** 4
         pickle.dump(conceptarium, open(metadata_path, 'wb'))
 
     for idx, result in enumerate(results):
@@ -62,6 +64,17 @@ def find(query, model, relatedness, activation, noise, silent, top_k):
         results, key=lambda result: result['score'], reverse=True)
     memories = [conceptarium[e['corpus_id']] for e in results][:top_k]
     return memories
+
+
+def get_doc_paths(directory):
+    paths = []
+
+    for root, directories, files in os.walk(directory):
+        for filename in files:
+            path = os.path.join(root, filename)
+            paths.append(path)
+
+    return paths
 
 
 def load_model():
@@ -95,7 +108,7 @@ def get_modality(content):
 
 
 def compensate_modality_mismatch(result):
-    result['score'] *= 2.5
+    result['score'] *= 2.8
     return result
 
 
