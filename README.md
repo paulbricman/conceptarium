@@ -14,9 +14,7 @@ Start the web server using:
 python3 -m uvicorn main:app --reload
 ```
 
-This will make your conceptarium available at `127.0.0.1:8000`. Go to `127.0.0.1:8000/docs` to get an overview of the available endpoints:
-
-![](/docs.png)
+This will make your conceptarium available at `127.0.0.1:8000`. Go to `127.0.0.1:8000/docs` to get an overview of the available endpoints, and read the [architecture section](https://psionica.org/tools/conceptarium/#architecture) of the write-up.
 
 **Note**: If you want to access your conceptarium remotely, have a look at [ngrok](https://ngrok.com/).
 
