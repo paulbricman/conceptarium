@@ -18,17 +18,18 @@ def init():
 def save(thought):
     conceptarium = pickle.load(open(metadata_path, 'rb'))
 
-    modality_match = [e.modality == thought.modality for e in conceptarium]
-    corpus_embeddings = [e.embedding for e in conceptarium]
+    if len(conceptarium) > 0:
+        modality_match = [e.modality == thought.modality for e in conceptarium]
+        corpus_embeddings = [e.embedding for e in conceptarium]
 
-    results = util.semantic_search(
-        [thought.embedding], corpus_embeddings, top_k=len(corpus_embeddings), score_function=util.dot_score)[0]
-    results = [e if modality_match[e['corpus_id']]
-               else compensate_modality_mismatch(e) for e in results]
+        results = util.semantic_search(
+            [thought.embedding], corpus_embeddings, top_k=len(corpus_embeddings), score_function=util.dot_score)[0]
+        results = [e if modality_match[e['corpus_id']]
+                   else compensate_modality_mismatch(e) for e in results]
 
-    for result in results:
-        conceptarium[result['corpus_id']
-                     ].interest += min(result['score'], 1) ** 4
+        for result in results:
+            conceptarium[result['corpus_id']
+                         ].interest += min(result['score'], 1) ** 4
 
     conceptarium += [thought]
     pickle.dump(conceptarium, open(metadata_path, 'wb'))
