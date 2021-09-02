@@ -33,6 +33,7 @@ async def save_imagery(file: UploadFile = File(...)):
         secrets.token_urlsafe(8) + extension
     open(filename, 'wb+').write(content)
     save(Thought(filename, content, model))
+    return HTMLResponse(success_response())
 
 
 @app.get('/find/lang/html')

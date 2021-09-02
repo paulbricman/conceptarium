@@ -1,5 +1,5 @@
 :root {
-  --custom-color: rgb(241, 163, 75);
+  --custom-color: #228b22;
 }
 
 * {
@@ -23,11 +23,11 @@
   font-weight: bold;
   margin: 20px;
   font-size: 30;
-  color: white;
+  color: #228b22;
 }
 
 body {
-  background-color: rgb(19, 20, 24);
+  background-color: #fffffd;
 }
 
 .card-image {
@@ -43,7 +43,7 @@ body {
   margin: 10px;
   margin-bottom: 0px;
   width: 40rem;
-  color: white;
+  color: #fffffd;
   font-weight: bold;
   text-align: left;
 }
