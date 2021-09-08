@@ -1,5 +1,7 @@
 from util import get_doc_paths
 from zipfile import ZipFile
+import numpy as np
+import time
 
 
 def html_response(thoughts):
@@ -59,6 +61,7 @@ def json_response(thoughts):
         thought_json = {
             'timestamp': thought.timestamp,
             'interest': thought.interest,
+            'activation': np.log(thought.interest / (1 - 0.9)) - 0.9 * np.log((time.time() - thought.timestamp) / (3600 * 24) + 0.1),
             'modality': thought.modality,
             'embedding': thought.embedding.tolist(),
         }
