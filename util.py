@@ -35,7 +35,7 @@ def save(thought):
     pickle.dump(conceptarium, open(metadata_path, 'wb'))
 
 
-def find(query, model, relatedness, activation, noise, silent, top_k):
+def find(query, model, relatedness, serendipity, noise, silent, top_k):
     conceptarium = pickle.load(open(metadata_path, 'rb'))
 
     query_embedding = embed(query, model)
@@ -57,7 +57,7 @@ def find(query, model, relatedness, activation, noise, silent, top_k):
 
     for idx, result in enumerate(results):
         results[idx]['score'] = (relatedness * result['score']
-                                 + activation *
+                                 - serendipity *
                                  (np.log(conceptarium[result['corpus_id']].interest / (1 - 0.9)) - 0.9 * np.log((time.time() - conceptarium[result['corpus_id']].timestamp) / (3600 * 24) + 0.1))) \
             * np.random.normal(1, noise)
 
