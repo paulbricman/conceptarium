@@ -5,3 +5,4 @@ Pillow
 secrets
 aiofiles
 python-multipart
+pytest

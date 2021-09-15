@@ -19,7 +19,7 @@ app.mount('/assets', StaticFiles(directory='assets'))
 
 @app.get('/save/lang')
 async def save_language(content: str, background_tasks: BackgroundTasks):
-    if len(content) > 3:
+    if len(content) > 0:
         filename = 'conceptarium/' + secrets.token_urlsafe(8) + '.txt'
         open(filename, 'w').write(content)
         background_tasks.add_task(save, Thought(filename, content, model))
