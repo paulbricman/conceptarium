@@ -39,15 +39,16 @@ body {
 }
 
 .button {
-  border: 2px solid;
+  border: 4px solid;
   border-color: var(--accent-color);
   border-radius: 4px;
-  background-color: var(--text-color);
-  color: var(--accent-color);
+  background-color: var(--accent-color);
+  color: var(--text-color);
   font-weight: bold;
   font-size: 16;
   padding-left: 10px;
   padding-right: 10px;
+  outl
 }
 
 .card {
