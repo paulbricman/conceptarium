@@ -10,17 +10,21 @@
   href="/assets/style.css"
   media="screen"
 />
-<div class="header"><h2>conceptarium.</h2></div>
+<div class="header"><h2>🌿&nbspconceptarium.</h2></div>
 <div class="board">
   <form action="/save/imag" method="POST" enctype="multipart/form-data">
-    <div class="card">Save a thought expressed through imagery.</div>
+    <div class="card">
+      <div class="card-body">Save a thought expressed through imagery.</div>
+    </div>
     <br />
     <div class="card">
-      <input type="file" id="file" name="file" accept="image/*" required />
+      <div class="card-body">
+        <input type="file" id="file" name="file" accept="image/*" required />
+      </div>
     </div>
     <br /><br />
     <div>
-      <input type="submit" value="save" />
+      <input type="submit" value="save" class="button" />
     </div>
   </form>
 </div>

@@ -1,10 +1,14 @@
 :root {
-  --custom-color: #228b22;
+  --accent-color: #474539;
+  --link-color: #228b22;
+  --text-color: #fffffd;
+  --background-color: #fffffd;
 }
 
 * {
   box-sizing: border-box;
-  font-family: monospace;
+  font-family: "Space Grotesk";
+  src: url("/assets/SpaceGrotesk.ttf");
 }
 
 .board {
@@ -15,7 +19,7 @@
 }
 
 .header {
-  color: var(--custom-color);
+  color: var(--accent-color);
   text-align: center;
 }
 
@@ -23,27 +27,39 @@
   font-weight: bold;
   margin: 20px;
   font-size: 30;
-  color: #228b22;
+  color: var(--accent-color);
 }
 
 body {
-  background-color: #fffffd;
+  background-color: var(--text-color);
 }
 
 .card-image {
   width: 100%;
 }
 
+.button {
+  border: 2px solid;
+  border-color: var(--accent-color);
+  border-radius: 4px;
+  background-color: var(--text-color);
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: 16;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .card {
   box-sizing: border-box;
   border: 4px solid;
-  border-color: var(--custom-color);
-  background-color: var(--custom-color);
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
   display: inline-block;
   margin: 10px;
   margin-bottom: 0px;
   width: 40rem;
-  color: #fffffd;
+  color: var(--text-color);
   font-weight: bold;
   text-align: left;
 }
