@@ -28,6 +28,14 @@ def success_response():
     return open('assets/success.html').read()
 
 
+def lang_form_response():
+    return open('assets/lang.html').read()
+
+
+def imag_form_response():
+    return open('assets/imag.html').read()
+
+
 def archive_response():
     paths = get_doc_paths('conceptarium')
     with ZipFile('conceptarium.zip', 'w') as zip:

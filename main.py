@@ -37,6 +37,16 @@ async def save_imagery(file: UploadFile = File(...)):
     return HTMLResponse(success_response())
 
 
+@app.get('/save/lang/form')
+async def save_language_form():
+    return HTMLResponse(lang_form_response())
+
+
+@app.get('/save/imag/form')
+async def save_imagery_form():
+    return HTMLResponse(imag_form_response())
+
+
 @app.get('/find/lang/html')
 async def find_by_language_return_html(content: str, relatedness: Optional[float] = 1, serendipity: Optional[float] = 0, noise: Optional[float] = 0.01, silent: Optional[bool] = False, top_k: Optional[int] = 50):
     thoughts = find(content, model, relatedness,

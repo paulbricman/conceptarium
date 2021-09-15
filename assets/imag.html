@@ -1,0 +1,26 @@
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  crossorigin="anonymous"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/style.css"
+  media="screen"
+/>
+<div class="header"><h2>conceptarium.</h2></div>
+<div class="board">
+  <form action="/save/imag" method="POST" enctype="multipart/form-data">
+    <div class="card">Save a thought expressed through imagery.</div>
+    <br />
+    <div class="card">
+      <input type="file" id="file" name="file" accept="image/*" required />
+    </div>
+    <br /><br />
+    <div>
+      <input type="submit" value="save" />
+    </div>
+  </form>
+</div>
