@@ -1,0 +1,38 @@
+name: pytest
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+          
+      - name: Create folder
+        run: mkdir conceptarium
+          
+      - name: Install LDAP
+        run: sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
+      
+      - name: Install OpenSSL
+        run: python3 -m pip install pyOpenSSL
+          
+      - name: Install requirements
+        run: python3 -m pip install -r requirements.txt
+        
+      - name: Run tests
+        run: pytest
+          
+      
