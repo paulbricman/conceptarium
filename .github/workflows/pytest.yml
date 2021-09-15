@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: "3.8"
           
+      - name: Install LDAP
+        run: sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
+      
       - name: Install OpenSSL
         run: python3 -m pip install pyOpenSSL
           
