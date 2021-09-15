@@ -14,6 +14,7 @@ model = load_model()
 init()
 
 app.mount('/conceptarium', StaticFiles(directory='conceptarium'))
+app.mount('/assets', StaticFiles(directory='assets'))
 
 
 @app.get('/save/lang')

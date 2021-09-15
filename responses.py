@@ -6,7 +6,7 @@ import time
 
 def html_response(thoughts):
     html = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">'
-    html += '<link rel="stylesheet" type="text/css" href="/conceptarium/style.css" media="screen" />'
+    html += '<link rel="stylesheet" type="text/css" href="/assets/style.css" media="screen" />'
     html += '<div class="header"><h2>conceptarium.</h2></div>'
     html += '<div class="board">'
 
@@ -25,7 +25,7 @@ def html_response(thoughts):
 
 
 def success_response():
-    return open('conceptarium/success.html').read()
+    return open('assets/success.html').read()
 
 
 def archive_response():
