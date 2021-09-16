@@ -24,16 +24,24 @@ def html_response(thoughts):
     return html
 
 
-def success_response():
+def save_success_response():
     return open('assets/success.html').read()
 
 
-def lang_form_response():
-    return open('assets/lang.html').read()
+def save_lang_form_response():
+    return open('assets/save_lang.html').read()
 
 
-def imag_form_response():
-    return open('assets/imag.html').read()
+def save_imag_form_response():
+    return open('assets/save_imag.html').read()
+
+
+def find_lang_form_response():
+    return open('assets/find_lang.html').read()
+
+
+def find_imag_form_response():
+    return open('assets/find_imag.html').read()
 
 
 def archive_response():

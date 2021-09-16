@@ -17,13 +17,23 @@ app.mount('/conceptarium', StaticFiles(directory='conceptarium'))
 app.mount('/assets', StaticFiles(directory='assets'))
 
 
+@app.get('/save/lang/form')
+async def save_language_form():
+    return HTMLResponse(save_lang_form_response())
+
+
+@app.get('/save/imag/form')
+async def save_imagery_form():
+    return HTMLResponse(save_imag_form_response())
+
+
 @app.get('/save/lang')
 async def save_language(content: str, background_tasks: BackgroundTasks):
     if len(content) > 0:
         filename = 'conceptarium/' + secrets.token_urlsafe(8) + '.txt'
         open(filename, 'w').write(content)
         background_tasks.add_task(save, Thought(filename, content, model))
-        return HTMLResponse(success_response())
+        return HTMLResponse(save_success_response())
 
 
 @app.post('/save/imag')
@@ -34,17 +44,12 @@ async def save_imagery(file: UploadFile = File(...)):
         secrets.token_urlsafe(8) + extension
     open(filename, 'wb+').write(content)
     save(Thought(filename, content, model))
-    return HTMLResponse(success_response())
+    return HTMLResponse(save_success_response())
 
 
-@app.get('/save/lang/form')
-async def save_language_form():
-    return HTMLResponse(lang_form_response())
-
-
-@app.get('/save/imag/form')
-async def save_imagery_form():
-    return HTMLResponse(imag_form_response())
+@app.get('/find/lang/form')
+async def find_by_language_form():
+    return HTMLResponse(find_lang_form_response())
 
 
 @app.get('/find/lang/html')
@@ -73,6 +78,11 @@ async def find_by_language_return_json(content: str, relatedness: Optional[float
     thoughts = find(content, model, relatedness,
                     serendipity, noise, silent, top_k)
     return json_response(thoughts)
+
+
+@app.get('/find/imag/form')
+async def find_by_imagery_form():
+    return HTMLResponse(find_imag_form_response())
 
 
 @app.post('/find/imag/html')
