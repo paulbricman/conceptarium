@@ -45,7 +45,6 @@ body {
   background-color: var(--link-color);
   color: var(--text-color);
   font-weight: bold;
-  font-size: 16;
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -68,6 +67,10 @@ body {
   .card {
     width: calc(100% - 20px);
     margin-bottom: 0px;
+    font-size: 28;
+  }
+
+  .button {
     font-size: 28;
   }
 }
