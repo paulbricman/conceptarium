@@ -12,6 +12,7 @@ metadata_path = 'conceptarium/metadata.pickle'
 
 def init():
     if not os.path.exists(metadata_path):
+        os.mkdir('conceptarium')
         pickle.dump(list(), open(metadata_path, 'wb'))
 
 
