@@ -24,12 +24,13 @@ This will make your conceptarium available at `127.0.0.1:8000`.
 
 # Usage
 
-
 **Note**: If you want to access your conceptarium remotely, you might want to have a look at [ngrok](https://ngrok.com/) and expose local port 8000 to the world via a URL.
 
-Out of the box, the conceptarium exposes endpoints for all relevant interactions which can be accessed through a browser. However, for power users, a host of endpoints are exposed which return JSONs, plain text, image files, and others, rather than web pages. Those can be used to set up the conceptarium as a browser search engine, for creating [AutoKey](https://github.com/autokey/autokey) / [AutoHotKey](https://www.autohotkey.com/) scripts, for setting up [IFTTT](https://ifttt.com/) integrations, and others.
+Out of the box, the conceptarium exposes endpoints for all relevant interactions which can be accessed through a browser (see mockups below). However, for power users, a host of endpoints are exposed which return JSONs, plain text, image files, and others, rather than web pages. Those can be used to set up the conceptarium as a browser search engine, for creating [AutoKey](https://github.com/autokey/autokey) / [AutoHotKey](https://www.autohotkey.com/) scripts, for setting up [IFTTT](https://ifttt.com/) integrations, and others.
 
 **Please find the complete auto-generated API docs over at `127.0.0.1:8000/docs`.**
+
+The style and color scheme of your conceptarium can be tweaked via `assets/style.css`.
 
 ![mockuper](https://user-images.githubusercontent.com/20104026/133883441-0faae359-9335-46bf-b10c-27ebb8c274b3.png)
 ![mockuper(1)](https://user-images.githubusercontent.com/20104026/133883445-b26de5d2-cd71-4a7f-8c0d-99ae25da2865.png)
