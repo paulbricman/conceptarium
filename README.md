@@ -35,3 +35,25 @@ The style and color scheme of your conceptarium can be tweaked via `assets/style
 ![mockuper](https://user-images.githubusercontent.com/20104026/133883441-0faae359-9335-46bf-b10c-27ebb8c274b3.png)
 ![mockuper(1)](https://user-images.githubusercontent.com/20104026/133883445-b26de5d2-cd71-4a7f-8c0d-99ae25da2865.png)
 ![mockuper(2)](https://user-images.githubusercontent.com/20104026/133883515-37e7853f-171e-4760-bf03-a2fc557dc364.png)
+
+# Screencasts
+**Note:** Content listed below uses dummy data and an older design. 
+
+AutoKey "I'm feeling lucky" text-to-image
+
+https://user-images.githubusercontent.com/20104026/134158253-1ff71d90-2f89-40f0-a074-2dd489bd1683.mp4
+
+Browser search shortcut
+
+https://user-images.githubusercontent.com/20104026/134158264-c8b7ecd8-b11c-4b56-9a42-4f4c3a36573f.mp4
+
+Autokey custom text-to-text dialog
+
+https://user-images.githubusercontent.com/20104026/134158276-cadae2cd-6991-41df-a09d-3e9dbc09ba29.mp4
+
+Google Assistant + IFTTT
+
+![eef9e426-06cc-42ff-935b-a74ac64d5991](https://user-images.githubusercontent.com/20104026/134158774-8f820369-d6cc-4e6c-a485-50e29c458061.png)
+
+
+
