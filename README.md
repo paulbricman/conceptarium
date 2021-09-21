@@ -1,7 +1,7 @@
 # Conceptarium
 A conceptarium (noun. /knsɛptɛriəm/, plural: conceptaria) is a fluid medium for storing, relating, and surfacing thoughts based on a new representation of knowledge. It’s meant to provide a foundation for new tools for thought to build onto, a means to nurture a new tooling ecosystem for knowledge work – a cognitive infrastructure. It embodies a philosophy of knowledge which differs in important ways from the one held by the knowledge graph poster children (e.g. Roam Research, Obsidian, Logseq), and can be deployed today in a self-hosted regime, even on a modest Raspberry Pi.
 
-[Read more...](https://psionica.org/tools/conceptarium/)
+[Read more...](https://paulbricman.com/thoughtware/conceptarium)
 
 # Installation
 The conceptarium is a server app which can be deployed on managed hosting (e.g. DigitalOcean) or in a self-hosted regime (e.g. salvaged desktop, Raspberry Pi 4). The app itself takes up about **1GB RAM** when running.
