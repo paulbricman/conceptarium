@@ -7,8 +7,9 @@ import time
 def html_response(thoughts):
     html = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">'
     html += '<link rel="stylesheet" type="text/css" href="/assets/style.css" media="screen" />'
-    html += '<div class="header"><h2>🌿&nbspconceptarium.</h2></div>'
-    html += '<div class="board">'
+    html += '<script src="//code.jquery.com/jquery-1.10.2.js"></script>'
+    html += '<script> $(function(){$("#header").load("/assets/header.html");}); </script>'
+    html += '<div id="header""></div><div class="board">'
 
     for thought in thoughts:
         html += '<div class="card">'
