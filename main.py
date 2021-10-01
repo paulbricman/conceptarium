@@ -5,6 +5,8 @@ from fastapi.responses import HTMLResponse, PlainTextResponse, FileResponse
 import secrets
 from pathlib import Path
 from typing import Optional
+from PIL import Image
+import io
 
 from util import *
 from responses import *
@@ -39,10 +41,9 @@ async def save_language(content: str, background_tasks: BackgroundTasks):
 @app.post('/save/imag')
 async def save_imagery(file: UploadFile = File(...)):
     content = await file.read()
-    extension = Path(file.filename).suffix
-    filename = 'conceptarium/' + \
-        secrets.token_urlsafe(8) + extension
-    open(filename, 'wb+').write(content)
+    image = Image.open(io.BytesIO(content)).convert('RGB')
+    filename = 'conceptarium/' + secrets.token_urlsafe(8) + '.jpg'
+    image.save(filename, quality=50)
     save(Thought(filename, content, model))
     return HTMLResponse(save_success_response())
 
