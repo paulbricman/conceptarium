@@ -55,8 +55,6 @@ The style and color scheme of your conceptarium can be tweaked via `assets/style
 
 # Demos
 
-Find more a more in-depth take on possible workflows [here](https://paulbricman.com/reflections/early-conceptarium-workflows).
-
 **Note:** Content listed below uses dummy data and an older design. 
 
 AutoKey "I'm feeling lucky" text-to-image
@@ -75,5 +73,4 @@ Google Assistant + IFTTT
 
 ![eef9e426-06cc-42ff-935b-a74ac64d5991](https://user-images.githubusercontent.com/20104026/134158774-8f820369-d6cc-4e6c-a485-50e29c458061.png)
 
-
-
+Find more a more in-depth take on possible workflows [here](https://paulbricman.com/reflections/early-conceptarium-workflows).
