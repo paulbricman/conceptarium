@@ -48,6 +48,13 @@ Out of the box, the conceptarium exposes endpoints for all relevant interactions
 
 The style and color scheme of your conceptarium can be tweaked via `assets/style.css`.
 
+# Further Reading
+
+- [early conceptarium workflows](https://paulbricman.com/reflections/early-conceptarium-workflows)
+- [dynamical systems online](https://paulbricman.com/reflections/dynamical-systems-online)
+- [ideoponics](https://paulbricman.com/reflections/ideoponics)
+- [breaking frames](https://paulbricman.com/reflections/breaking-frames)
+
 # Screenshots
 
 ![mockuper(1)](https://user-images.githubusercontent.com/20104026/133883445-b26de5d2-cd71-4a7f-8c0d-99ae25da2865.png)
@@ -72,5 +79,3 @@ https://user-images.githubusercontent.com/20104026/134158276-cadae2cd-6991-41df-
 Google Assistant + IFTTT
 
 ![eef9e426-06cc-42ff-935b-a74ac64d5991](https://user-images.githubusercontent.com/20104026/134158774-8f820369-d6cc-4e6c-a485-50e29c458061.png)
-
-Find more a more in-depth take on possible workflows [here](https://paulbricman.com/reflections/early-conceptarium-workflows).
