@@ -54,6 +54,7 @@ The style and color scheme of your conceptarium can be tweaked via `assets/style
 - [dynamical systems online](https://paulbricman.com/reflections/dynamical-systems-online)
 - [ideoponics](https://paulbricman.com/reflections/ideoponics)
 - [breaking frames](https://paulbricman.com/reflections/breaking-frames)
+- [dixit kernel functions](https://paulbricman.com/reflections/dixit-kernel-functions)
 
 # Screenshots
 
