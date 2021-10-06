@@ -39,6 +39,7 @@ body {
 }
 
 .button {
+  width: fit-content;
   border: 4px solid;
   border-color: var(--link-color);
   border-radius: 4px;
