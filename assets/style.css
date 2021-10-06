@@ -26,7 +26,7 @@
 .header h2 {
   font-weight: bold;
   margin: 20px;
-  font-size: 30;
+  font-size: 3rem;
   color: var(--accent-color);
 }
 
@@ -66,12 +66,17 @@ body {
 
 @media only screen and (max-width: 1200px) {
   .card {
-    width: calc(100% - 20px);
+    width: calc(100% - 40px);
+    margin: 20px;
     margin-bottom: 0px;
-    font-size: 28;
+    font-size: 1.5rem !important;
   }
 
   .button {
-    font-size: 28;
+    font-size: 1.5rem !important;
+  }
+
+  .header h2 {
+    font-size: 3rem !important;
   }
 }
