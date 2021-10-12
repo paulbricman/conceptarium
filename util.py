@@ -30,7 +30,7 @@ def save(thought):
 
         for result in results:
             conceptarium[result['corpus_id']
-                         ].interest += min(result['score'], 1) ** 4
+                         ].interest += result['score']
 
     if len(list(filter(lambda x: open(x.filename, 'rb').read() == open(thought.filename, 'rb').read(), conceptarium))) == 0:
         conceptarium += [thought]
@@ -54,7 +54,7 @@ def find(query, model, relatedness, serendipity, noise, silent, top_k):
     if not silent:
         for result in results:
             conceptarium[result['corpus_id']
-                         ].interest += min(result['score'], 1) ** 4
+                         ].interest += result['score']
         pickle.dump(conceptarium, open(metadata_path, 'wb'))
 
     for idx, result in enumerate(results):
