@@ -5,11 +5,15 @@
   --background-color: #fffffd;
 }
 
-* {
-  box-sizing: border-box;
-  font-family: "Space Grotesk" !important;
+@font-face {
+  font-family: "Space Grotesk";
   src: url("/assets/SpaceGrotesk.ttf") format('truetype'),
        url("/assets/SpaceGrotesk.woff2") format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Space Grotesk";
 }
 
 .board {
