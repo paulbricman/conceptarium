@@ -1,8 +1,0 @@
-sentence_transformers
-numpy
-fastapi
-Pillow
-secrets
-aiofiles
-python-multipart
-pytest
