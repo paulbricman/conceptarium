@@ -1,5 +1,5 @@
 import streamlit as st
-from components import core, inspector, navigator, viewport
+from components import core, inspector, navigator, viewport, ranker
 import streamlit.components.v1 as components
 
 st.set_page_config(
@@ -11,8 +11,8 @@ top = st.empty()
 core.header_section()
 core.footer_section()
 
-cols = st.columns([1, 1, 1, 1, 1])
-left_section = [navigator]
+cols = st.columns(6)
+left_section = [navigator, ranker]
 right_section = [inspector]
 
 viewport.paint(cols[1:-1])

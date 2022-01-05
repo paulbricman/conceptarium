@@ -85,7 +85,6 @@ def load_model():
 
 
 def embed(content, model):
-    return None
     if get_modality(content) == 'language':
         return model.encode(content, convert_to_tensor=True, normalize_embeddings=True)
     else:
