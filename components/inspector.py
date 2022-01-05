@@ -30,7 +30,7 @@ def paint():
             st.markdown('**modality**: ' + thought.modality)
             st.markdown('**filename**: ' + thought.filename.split('/')[-1])
             st.markdown('**timestamp**: ' + datetime.utcfromtimestamp(int(thought.timestamp)).strftime("%d.%m.%Y"))
-            st.markdown('**interest**: ' + str(round(np.log(thought.interest / (1 - 0.9)) - 0.9 * np.log((time.time() - thought.timestamp) / (3600 * 24) + 0.1), 2)))
+            st.markdown('**activation**: ' + str(round(np.log(thought.interest / (1 - 0.9)) - 0.9 * np.log((time.time() - thought.timestamp) / (3600 * 24) + 0.1), 2)))
         else:
             st.markdown('**type**: custom query')
             if st.session_state['navigator_modality'] == 'language':

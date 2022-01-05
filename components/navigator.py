@@ -25,6 +25,7 @@ def load_imagery_shift():
 
 
 def paint():
+    print('go')
     model = load_model()
     modality = st.selectbox('modality', ['language', 'imagery'],
         ['language', 'imagery'].index(st.session_state.get('navigator_modality', 'language')))
@@ -55,5 +56,6 @@ def paint():
         st.session_state['navigator_modality'] = modality
         st.session_state['navigator_embedding'] = embedding
         st.session_state['navigator_input'] = input
-        st.experimental_rerun()
+        # print('last:', st.session_state['ranker_noise'])
+        # st.experimental_rerun()
     

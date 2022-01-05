@@ -26,6 +26,7 @@ def load_thoughts():
 
     
 def paint(cols):
+    # print('on viewport:', st.session_state['ranker_noise'])
     if st.session_state.get('navigator_embedding', None) is not None:
         thoughts = load_thoughts()
         results = util.semantic_search(
@@ -52,7 +53,6 @@ def paint(cols):
                 elif thought.modality == 'imagery':
                     st.image(thought.get_content())
 
-                key = np.random.random()
                 if st.button('jump', thought):
                     st.session_state['navigator_input'] = thought.get_content()
                     st.session_state['navigator_modality'] = thought.modality

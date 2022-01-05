@@ -15,14 +15,16 @@ cols = st.columns(6)
 left_section = [navigator, ranker]
 right_section = [inspector]
 
-viewport.paint(cols[1:-1])
 
 for component in left_section:   
     with cols[0]:
         with st.expander(component.get_name(), True):
             component.paint()
 
+viewport.paint(cols[1:-1])
+
 for component in right_section:   
     with cols[-1]:
         with st.expander(component.get_name(), True):
             component.paint()
+            
