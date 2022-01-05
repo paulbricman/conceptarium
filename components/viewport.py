@@ -1,6 +1,7 @@
 import streamlit as st
 import pickle
 from sentence_transformers import util
+import torch
 
 
 def get_name():
@@ -9,29 +10,42 @@ def get_name():
 
 @st.cache(persist=True, allow_output_mutation=True)
 def load_thoughts():
-    return pickle.load(open('conceptarium/metadata.pickle', 'rb'))
+    thoughts = pickle.load(open('conceptarium/metadata.pickle', 'rb'))
+    langauge_centroid = torch.mean(torch.stack([e.embedding for e in thoughts if e.modality == 'language']), -2)
+    imagery_centroid = torch.mean(torch.stack([e.embedding for e in thoughts if e.modality == 'imagery']), -2)
+    
+    print(imagery_centroid - langauge_centroid)
 
+    for thought_idx, thought in enumerate(thoughts):
+        if thought.modality == 'imagery':
+            thoughts[thought_idx].embedding += langauge_centroid - imagery_centroid
+    
+    return thoughts
 
-def paint():
+    
+def paint(cols):
     if st.session_state.get('navigator_embedding', None) is not None:
         thoughts = load_thoughts()
         results = util.semantic_search(
             [st.session_state['navigator_embedding']],
-            [e.embedding for e in thoughts])
+            [e.embedding for e in thoughts], top_k=20)
+        results = [e for e in results[0] if e['score'] > 0.7]
 
-        for result in results[0]:
-            thought = thoughts[result['corpus_id']]
-            if thought.modality == 'language':
-                content = open(thought.filename).read()
-                st.success(content)
-            elif thought.modality == 'imagery':
-                content = open(thought.filename, 'rb').read()
-                st.image(content)
+        if thoughts[results[0]['corpus_id']].get_content() == st.session_state['navigator_input']:
+            results = results[1:]
 
-            if st.button('jump', thought):
-                st.session_state['navigator_input'] = content
-                st.session_state['navigator_modality'] = thought.modality
-                st.session_state['navigator_embedding'] = thought.embedding
-                st.experimental_rerun()
+        for result_idx, result in enumerate(results):
+            with cols[result_idx % len(cols)]:
+                thought = thoughts[result['corpus_id']]
+                if thought.modality == 'language':
+                    st.success(thought.get_content())
+                elif thought.modality == 'imagery':
+                    st.image(thought.get_content())
+
+                if st.button('jump', thought):
+                    st.session_state['navigator_input'] = thought.get_content()
+                    st.session_state['navigator_modality'] = thought.modality
+                    st.session_state['navigator_embedding'] = thought.embedding
+                    st.experimental_rerun()
 
     

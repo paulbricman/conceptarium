@@ -2,9 +2,9 @@ import streamlit as st
 
 
 def header_section():
-    # st.markdown('### 💡 conceptarium')
-    pass
-
+    st.markdown('### 💡 conceptarium')
+    
+    
 def footer_section():
     hide_streamlit_style = '''
                 <style>

@@ -85,6 +85,7 @@ def load_model():
 
 
 def embed(content, model):
+    return None
     if get_modality(content) == 'language':
         return model.encode(content, convert_to_tensor=True, normalize_embeddings=True)
     else:
@@ -122,3 +123,10 @@ class Thought:
         self.timestamp = time.time()
         self.interest = 1
         self.embedding = embed(content, model)
+
+
+    def get_content(self):
+        if self.modality == 'language':
+            return open(self.filename).read()
+        elif self.modality == 'imagery':
+            return open(self.filename, 'rb').read()
