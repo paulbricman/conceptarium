@@ -1,30 +1,23 @@
 import streamlit as st
-from components import core, inspector, navigator, viewport, ranker
-import streamlit.components.v1 as components
+from components import custodian, header, inspector, navigator, viewport, ranker
 
 st.set_page_config(
     page_title='💡 conceptarium',
     layout='wide')
 
-top = st.empty()
+custodian.paint()
+header.paint()
 
-core.header_section()
-core.footer_section()
+cols = st.columns(5)
 
-cols = st.columns(6)
-left_section = [navigator, ranker]
-right_section = [inspector]
-
-
-for component in left_section:   
+for component in [navigator, ranker]:   
     with cols[0]:
         with st.expander(component.get_name(), True):
             component.paint()
 
-viewport.paint(cols[1:-1])
-
-for component in right_section:   
+for component in [inspector]:   
     with cols[-1]:
         with st.expander(component.get_name(), True):
             component.paint()
             
+viewport.paint(cols[1:-1])

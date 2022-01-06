@@ -26,7 +26,6 @@ def load_thoughts():
 
     
 def paint(cols):
-    # print('on viewport:', st.session_state['ranker_noise'])
     if st.session_state.get('navigator_embedding', None) is not None:
         thoughts = load_thoughts()
         results = util.semantic_search(

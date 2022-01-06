@@ -1,11 +1,9 @@
 import streamlit as st
 
 
-def header_section():
+def paint():
     st.markdown('### 💡 conceptarium')
-    
-    
-def footer_section():
+
     hide_streamlit_style = '''
                 <style>
                 #MainMenu {visibility: hidden;}
