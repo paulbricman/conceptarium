@@ -1,5 +1,5 @@
 import streamlit as st
-import knowledge
+import knowledge.knowledge as knowledge
 from datetime import datetime
 import numpy as np
 import time

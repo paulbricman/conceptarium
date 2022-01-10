@@ -123,9 +123,46 @@ class Thought:
         self.interest = 1
         self.embedding = embed(content, model)
 
-
     def get_content(self):
         if self.modality == 'language':
             return open(self.filename).read()
         elif self.modality == 'imagery':
             return open(self.filename, 'rb').read()
+
+
+'''
+import json
+thoughts = json.load(open('knowledge/base/metadata.json', 'rb'))
+
+from datetime import datetime
+new_thoughts = []
+for thought in thoughts:
+    new_thought = {}
+    new_thought['filename'] = thought.filename
+    new_thought['modality'] = thought.modality
+    new_thought['timestamp'] = thought.timestamp
+    new_thought['interest'] = thought.interest
+    new_thought['embedding'] = thought.embedding
+    new_thoughts += [new_thought]
+
+for e_idx, e in enumerate(new_thoughts):
+    if e['modality'] == 'language':
+        new_thoughts[e_idx]['modality'] = 'text'
+    elif e['modality'] == 'imagery':
+        new_thoughts[e_idx]['modality'] = 'image'
+    else:
+        print(e['modality'])
+
+for e_idx, e in enumerate(new_thoughts):
+    new_thoughts[e_idx]['embedding'] = e['embedding'].tolist()
+
+for e_idx, e in enumerate(new_thoughts):
+    new_thoughts[e_idx]['embedding'] = [round(f, 6) for f in e['embedding']]
+
+for e_idx, e in enumerate(new_thoughts):
+    new_thoughts[e_idx]['filename'] = e['filename'].split('/')[-1]
+
+new_thoughts[0]
+
+json.dump(new_thoughts, open('knowledge/base/metadata.json', 'wb'))
+'''

@@ -1,5 +1,5 @@
 import streamlit as st
-import knowledge
+import knowledge.knowledge as knowledge
 from sentence_transformers import util
 import torch
 import numpy as np
@@ -16,8 +16,6 @@ def load_thoughts():
         [e.embedding for e in thoughts if e.modality == 'language']), -2)
     imagery_centroid = torch.mean(torch.stack(
         [e.embedding for e in thoughts if e.modality == 'imagery']), -2)
-
-    print(imagery_centroid - langauge_centroid)
 
     for thought_idx, thought in enumerate(thoughts):
         if thought.modality == 'imagery':
