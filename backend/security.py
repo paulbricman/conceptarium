@@ -4,6 +4,11 @@ import bcrypt
 
 
 def auth(token):
+    if token == None:
+        return {
+            'custodian': False
+        }
+
     path = Path('records.json')
 
     if not path.exists():
