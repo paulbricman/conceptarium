@@ -50,3 +50,15 @@ def create_microverse(modality, query, auth_result, encoder_model):
             json.dump(microverses, open(microverses_path, 'w'))
 
         return token
+
+
+def remove_microverse(auth_result, microverse_token):
+    microverses_path = Path('microverses.json')
+
+    if auth_result['custodian'] == False:
+        return 'Only the conceptarium\'s custodian can create microverses in it.'
+    else:
+        microverses = json.load(open(microverses_path))
+        microverses = [
+            e for e in microverses if e['token'] != microverse_token]
+        json.dump(microverses, open(microverses_path, 'w'))
