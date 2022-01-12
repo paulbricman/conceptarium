@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from security import auth
-from util import find, save
+from util import find, save, get_authorized_thoughts
 from sentence_transformers import SentenceTransformer
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
+from fastapi.responses import FileResponse
+from pathlib import Path
 
 
 app = FastAPI()
@@ -38,3 +40,13 @@ async def save_image_handler(query: UploadFile = File(...), token: str = Form(..
     auth_result = auth(token)
     results = save('image', query, auth_result, encoder_model)
     return results
+
+
+@app.get('/static')
+async def find_text_handler(filename: str, token: str):
+    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+
+    auth_result = auth(token)
+    thoughts = get_authorized_thoughts(auth_result)
+    if filename in [e['filename'] for e in thoughts]:
+        return FileResponse(knowledge_base_path / filename)
