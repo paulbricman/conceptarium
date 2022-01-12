@@ -6,6 +6,7 @@ from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
 from fastapi.responses import FileResponse
 from pathlib import Path
+from microverses import create_microverse
 
 
 app = FastAPI()
@@ -43,10 +44,23 @@ async def save_image_handler(query: UploadFile = File(...), token: str = Form(..
 
 
 @app.get('/static')
-async def find_text_handler(filename: str, token: str):
+async def static_handler(filename: str, token: str):
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
 
     auth_result = auth(token)
     thoughts = get_authorized_thoughts(auth_result)
     if filename in [e['filename'] for e in thoughts]:
         return FileResponse(knowledge_base_path / filename)
+
+
+@app.get('/microverse/create')
+async def microverse_create_handler(query: str, token: str):
+    auth_result = auth(token)
+    return create_microverse('text', query, auth_result, encoder_model)
+
+
+@app.post('/microverse/create')
+async def microverse_create_handler(query: UploadFile = File(...), token: str = Form(...)):
+    query = await query.read()
+    auth_result = auth(token)
+    return create_microverse('image', query, auth_result, encoder_model)
