@@ -6,6 +6,8 @@ from sentence_transformers import util
 import torch
 import secrets
 import time
+import numpy as np
+from numpy.linalg import norm
 
 
 def find(modality, query, auth_result, encoder_model):
@@ -36,7 +38,9 @@ def save(modality, query, auth_result, encoder_model):
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
 
     if auth_result['custodian'] == False:
-        return 'Only the conceptarium\'s custodian can save thoughts in it.'
+        return {
+            'message': 'Only the conceptarium\'s custodian can save thoughts in it.'
+        }
     else:
         if not (knowledge_base_path / 'metadata.json').exists():
             json.dump([], open(knowledge_base_path / 'metadata.json', 'w'))
@@ -76,16 +80,27 @@ def save(modality, query, auth_result, encoder_model):
 
             return new_thought
         else:
-            return 'Duplicate thought found.'
+            return {
+                'message': 'Duplicate thought found.'
+            }
 
 
 def get_authorized_thoughts(auth_result):
     metadata_path = Path('..') / 'knowledge' / 'base' / 'metadata.json'
+    thoughts = json.load(open(metadata_path))
 
     if auth_result['custodian'] == True:
-        return json.load(open(metadata_path))
+        return thoughts
     else:
-        return []
+        similarity_threshold = 0.7
+        authorized_microverse = auth_result['authorized_microverse']
+
+        results = util.semantic_search(
+            torch.Tensor(authorized_microverse['embedding']), torch.Tensor([e['embedding'] for e in thoughts]), top_k=10 ** 10)
+        authorized_thoughts = [thoughts[result['corpus_id']]
+                               for result in results[0] if result['score'] > similarity_threshold]
+
+        return authorized_thoughts
 
 
 def embed(modality, content, encoder_model):

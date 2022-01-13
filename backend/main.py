@@ -67,6 +67,6 @@ async def microverse_create_handler(query: UploadFile = File(...), token: str = 
 
 
 @app.get('/microverse/remove')
-async def microverse_remove_handler(custodian_token: str, microverse_token):
-    auth_result = auth(custodian_token)
-    return remove_microverse(auth_result, microverse_token)
+async def microverse_remove_handler(token: str, microverse: str):
+    auth_result = auth(token)
+    return remove_microverse(auth_result, microverse)

@@ -35,6 +35,12 @@ def auth(token):
                 'custodian': True
             }
         else:
+            microverses_path = Path('microverses.json')
+            microverses = json.load(open(microverses_path))
+            authorized_microverse = [
+                e for e in microverses if e['token'] == token][0]
+
             return {
-                'custodian': False
+                'custodian': False,
+                'authorized_microverse': authorized_microverse
             }
