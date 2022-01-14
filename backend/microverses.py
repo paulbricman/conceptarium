@@ -1,13 +1,13 @@
 import json
 from pathlib import Path
-from util import embed
+from util import encode
 import secrets
 import time
 from PIL import Image
 import io
 
 
-def create_microverse(modality, query, auth_result, encoder_model):
+def create_microverse(modality, query, auth_result, text_encoder, text_image_encoder):
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
     microverses_path = Path('microverses.json')
 
@@ -19,8 +19,8 @@ def create_microverse(modality, query, auth_result, encoder_model):
         if not microverses_path.exists():
             json.dump([], open(microverses_path, 'w'))
 
-        embedding = [round(e, 6)
-                     for e in embed(modality, query, encoder_model).tolist()]
+        query_embedding = encode(
+            modality, query, text_encoder, text_image_encoder)
         token = secrets.token_urlsafe(8)
 
         if modality == 'text':
@@ -33,7 +33,7 @@ def create_microverse(modality, query, auth_result, encoder_model):
                 "modality": modality,
                 "timestamp": time.time(),
                 "token": token,
-                "embedding": embedding
+                "embeddings": query_embedding
             }]
             json.dump(microverses, open(microverses_path, 'w'))
         elif modality == 'image':
@@ -42,13 +42,13 @@ def create_microverse(modality, query, auth_result, encoder_model):
             query.save(knowledge_base_path / filename, quality=50)
 
             microverses = json.load(open(microverses_path))
-            microverses += [{
+            microverses += {
                 "filename": filename,
                 "modality": modality,
                 "timestamp": time.time(),
                 "token": token,
-                "embedding": embedding
-            }]
+                "embeddings": query_embedding
+            }
             json.dump(microverses, open(microverses_path, 'w'))
 
         return {

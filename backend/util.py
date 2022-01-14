@@ -1,4 +1,5 @@
 import json
+from operator import mod
 from pathlib import Path
 from PIL import Image
 import io
@@ -10,23 +11,33 @@ import numpy as np
 from numpy.linalg import norm
 
 
-def find(modality, query, auth_result, encoder_model):
+def find(modality, query, auth_result, text_encoder, text_image_encoder):
     authorized_thoughts = get_authorized_thoughts(auth_result)
 
     if len(authorized_thoughts) == 0:
         return []
 
-    query_embedding = torch.Tensor([embed(modality, query, encoder_model)])
-    corpus_embeddings = torch.Tensor(
-        [e['embedding'] for e in authorized_thoughts])
-    results = util.semantic_search(
-        query_embedding, corpus_embeddings, top_k=10 ** 10)
+    query_embeddings = encode(
+        modality, query, text_encoder, text_image_encoder)
+    sims = []
 
-    for e in results[0]:
-        authorized_thoughts[e['corpus_id']]['relatedness'] = e['score']
-        authorized_thoughts[e['corpus_id']]['content'] = get_content(
-            authorized_thoughts[e['corpus_id']], True)
-        authorized_thoughts[e['corpus_id']].pop('filename', None)
+    for e in authorized_thoughts:
+        if modality == 'text':
+            if e['modality'] == 'text':
+                sims += [np.dot(e['embeddings']['text'], query_embeddings['text']) / (
+                    norm(e['embeddings']['text']) * norm(query_embeddings['text']))]
+            elif e['modality'] == 'image':
+                sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
+                    norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+        elif modality == 'image':
+            sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
+                norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+
+    for e_idx, e in enumerate(sims):
+        authorized_thoughts[e_idx]['relatedness'] = e
+        authorized_thoughts[e_idx]['content'] = get_content(
+            authorized_thoughts[e_idx], True)
+        authorized_thoughts[e_idx].pop('filename', None)
 
     authorized_thoughts = sorted(
         authorized_thoughts, key=lambda x: x['relatedness'], reverse=True)
@@ -34,7 +45,7 @@ def find(modality, query, auth_result, encoder_model):
     return authorized_thoughts
 
 
-def save(modality, query, auth_result, encoder_model):
+def save(modality, query, auth_result, text_encoder, text_image_encoder):
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
 
     if auth_result['custodian'] == False:
@@ -45,8 +56,8 @@ def save(modality, query, auth_result, encoder_model):
         if not (knowledge_base_path / 'metadata.json').exists():
             json.dump([], open(knowledge_base_path / 'metadata.json', 'w'))
 
-        query_embedding = [round(e, 6)
-                           for e in embed(modality, query, encoder_model).tolist()]
+        query_embedding = encode(
+            modality, query, text_encoder, text_image_encoder)
         thoughts = json.load(open(knowledge_base_path / 'metadata.json'))
 
         if modality == 'text':
@@ -71,7 +82,7 @@ def save(modality, query, auth_result, encoder_model):
                 'modality': modality,
                 'timestamp': time.time(),
                 'interest': 1,
-                'embedding': query_embedding
+                'embeddings': query_embedding
             }
 
             thoughts += [new_thought]
@@ -92,22 +103,48 @@ def get_authorized_thoughts(auth_result):
     if auth_result['custodian'] == True:
         return thoughts
     else:
-        similarity_threshold = 0.7
+        similarity_threshold = 0.3
         authorized_microverse = auth_result['authorized_microverse']
 
-        results = util.semantic_search(
-            torch.Tensor(authorized_microverse['embedding']), torch.Tensor([e['embedding'] for e in thoughts]), top_k=10 ** 10)
-        authorized_thoughts = [thoughts[result['corpus_id']]
-                               for result in results[0] if result['score'] > similarity_threshold]
+        if authorized_microverse == []:
+            return []
+
+        query_embeddings = authorized_microverse[0]['embeddings']
+        sims = []
+        for e in thoughts:
+            if authorized_microverse[0]['modality'] == 'text':
+                if e['modality'] == 'text':
+                    sims += [np.dot(e['embeddings']['text'], query_embeddings['text']) / (
+                        norm(e['embeddings']['text']) * norm(query_embeddings['text']))]
+                elif e['modality'] == 'image':
+                    sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
+                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+            elif authorized_microverse[0]['modality'] == 'image':
+                sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
+                    norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+
+        scored_thoughts = zip(thoughts, sims)
+        authorized_thoughts = [e[0]
+                               for e in scored_thoughts if e[1] > similarity_threshold]
 
         return authorized_thoughts
 
 
-def embed(modality, content, encoder_model):
+def encode(modality, content, text_encoder, text_image_encoder):
     if modality == 'text':
-        return encoder_model.encode(content)
+        return {
+            'text_model': 'sentence-transformers/multi-qa-mpnet-base-cos-v1',
+            'text_image_model': 'clip-ViT-B-32',
+            'text': [round(e, 6) for e in text_encoder.encode(content).tolist()],
+            'text_image': [round(e, 6) for e in text_image_encoder.encode(content).tolist()]
+        }
     elif modality == 'image':
-        return encoder_model.encode(Image.open(io.BytesIO(content)))
+        return {
+            'text_image_model': 'clip-ViT-B-32',
+            'text_image': [round(e, 6) for e in text_image_encoder.encode(Image.open(io.BytesIO(content))).tolist()]
+        }
+    else:
+        raise Exception('Can\'t encode content of modality "' + modality + '"')
 
 
 def get_content(thought, json_friendly=False):

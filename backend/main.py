@@ -10,13 +10,16 @@ from microverses import create_microverse, remove_microverse
 
 
 app = FastAPI()
-encoder_model = SentenceTransformer('clip-ViT-B-32')
+text_image_encoder = SentenceTransformer('clip-ViT-B-32')
+text_encoder = SentenceTransformer(
+    'sentence-transformers/multi-qa-mpnet-base-cos-v1')
 
 
 @app.get('/find')
 async def find_text_handler(query: str, token: str):
     auth_result = auth(token)
-    results = find('text', query, auth_result, encoder_model)
+    results = find('text', query, auth_result,
+                   text_encoder, text_image_encoder)
     return results
 
 
@@ -24,14 +27,16 @@ async def find_text_handler(query: str, token: str):
 async def find_image_handler(query: UploadFile = File(...), token: str = Form(...)):
     query = await query.read()
     auth_result = auth(token)
-    results = find('image', query, auth_result, encoder_model)
+    results = find('image', query, auth_result,
+                   text_encoder, text_image_encoder)
     return results
 
 
 @app.get('/save')
 async def save_text_handler(query: str, token: str):
     auth_result = auth(token)
-    results = save('text', query, auth_result, encoder_model)
+    results = save('text', query, auth_result,
+                   text_encoder, text_image_encoder)
     return results
 
 
@@ -39,7 +44,8 @@ async def save_text_handler(query: str, token: str):
 async def save_image_handler(query: UploadFile = File(...), token: str = Form(...)):
     query = await query.read()
     auth_result = auth(token)
-    results = save('image', query, auth_result, encoder_model)
+    results = save('image', query, auth_result,
+                   text_encoder, text_image_encoder)
     return results
 
 
@@ -56,14 +62,14 @@ async def static_handler(filename: str, token: str):
 @app.get('/microverse/create')
 async def microverse_create_handler(query: str, token: str):
     auth_result = auth(token)
-    return create_microverse('text', query, auth_result, encoder_model)
+    return create_microverse('text', query, auth_result, text_encoder, text_image_encoder)
 
 
 @app.post('/microverse/create')
 async def microverse_create_handler(query: UploadFile = File(...), token: str = Form(...)):
     query = await query.read()
     auth_result = auth(token)
-    return create_microverse('image', query, auth_result, encoder_model)
+    return create_microverse('image', query, auth_result, text_encoder, text_image_encoder)
 
 
 @app.get('/microverse/remove')
