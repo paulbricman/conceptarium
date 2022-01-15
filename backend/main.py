@@ -6,7 +6,7 @@ from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
 from fastapi.responses import FileResponse
 from pathlib import Path
-from microverses import create_microverse, remove_microverse
+from microverses import create_microverse, remove_microverse, list_microverses
 
 
 app = FastAPI()
@@ -76,3 +76,9 @@ async def microverse_create_handler(query: UploadFile = File(...), token: str = 
 async def microverse_remove_handler(token: str, microverse: str):
     auth_result = auth(token)
     return remove_microverse(auth_result, microverse)
+
+
+@app.get('/microverse/list')
+async def microverse_remove_handler(token: str):
+    auth_result = auth(token)
+    return list_microverses(auth_result)

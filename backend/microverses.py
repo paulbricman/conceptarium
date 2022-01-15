@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from util import encode
+from util import encode, get_content
 import secrets
 import time
 from PIL import Image
@@ -68,3 +68,19 @@ def remove_microverse(auth_result, microverse_token):
         microverses = [
             e for e in microverses if e['token'] != microverse_token]
         json.dump(microverses, open(microverses_path, 'w'))
+
+
+def list_microverses(auth_result):
+    microverses_path = Path('microverses.json')
+
+    if auth_result['custodian'] == False:
+        return {
+            'message': 'Only the conceptarium\'s custodian can list all microverses in it.'
+        }
+    else:
+        microverses = json.load(open(microverses_path))
+
+        for e_idx, e in enumerate(microverses):
+            microverses[e_idx]['content'] = get_content(
+                e, True)
+        return microverses
