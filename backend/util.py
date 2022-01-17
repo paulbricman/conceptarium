@@ -11,16 +11,16 @@ import numpy as np
 from numpy.linalg import norm
 
 
-def find(modality, query, auth_result, text_encoder, text_image_encoder):
+def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):
     authorized_thoughts = get_authorized_thoughts(auth_result)
+    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    query_embeddings = encode(
+        modality, query, text_encoder, text_image_encoder)
 
     if len(authorized_thoughts) == 0:
         return []
 
-    query_embeddings = encode(
-        modality, query, text_encoder, text_image_encoder)
     sims = []
-
     for e in authorized_thoughts:
         if modality == 'text':
             if e['modality'] == 'text':
@@ -32,6 +32,12 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder):
         elif modality == 'image':
             sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
                 norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+
+    if not silent and auth_result['custodian']:
+        for e_idx, e in enumerate(sims):
+            authorized_thoughts[e_idx]['interest'] += e
+        json.dump(authorized_thoughts, open(
+            knowledge_base_path / 'metadata.json', 'w'))
 
     for e_idx, e in enumerate(sims):
         authorized_thoughts[e_idx]['relatedness'] = e
@@ -45,7 +51,7 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder):
     return authorized_thoughts
 
 
-def save(modality, query, auth_result, text_encoder, text_image_encoder):
+def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
 
     if auth_result['custodian'] == False:
@@ -56,7 +62,7 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder):
         if not (knowledge_base_path / 'metadata.json').exists():
             json.dump([], open(knowledge_base_path / 'metadata.json', 'w'))
 
-        query_embedding = encode(
+        query_embeddings = encode(
             modality, query, text_encoder, text_image_encoder)
         thoughts = json.load(open(knowledge_base_path / 'metadata.json'))
 
@@ -76,13 +82,30 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder):
                 query = Image.open(io.BytesIO(query)).convert('RGB')
                 query.save(knowledge_base_path / filename, quality=50)
 
+        sims = []
+        for e in thoughts:
+            if modality == 'text':
+                if e['modality'] == 'text':
+                    sims += [np.dot(e['embeddings']['text'], query_embeddings['text']) / (
+                        norm(e['embeddings']['text']) * norm(query_embeddings['text']))]
+                elif e['modality'] == 'image':
+                    sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
+                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+            elif modality == 'image':
+                sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
+                    norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+
+        if not silent:
+            for e_idx, e in enumerate(sims):
+                thoughts[e_idx]['interest'] += e
+
         if len(duplicates) == 0:
             new_thought = {
                 'filename': filename,
                 'modality': modality,
                 'timestamp': time.time(),
                 'interest': 1,
-                'embeddings': query_embedding
+                'embeddings': query_embeddings
             }
 
             thoughts += [new_thought]
@@ -98,6 +121,10 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder):
 
 def get_authorized_thoughts(auth_result):
     metadata_path = Path('..') / 'knowledge' / 'base' / 'metadata.json'
+
+    if not (metadata_path).exists():
+        json.dump([], open(metadata_path, 'w'))
+
     thoughts = json.load(open(metadata_path))
 
     if auth_result['custodian'] == True:
