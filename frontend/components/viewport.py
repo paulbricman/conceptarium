@@ -1,5 +1,5 @@
 import streamlit as st
-import knowledge.knowledge as knowledge
+from . import knowledge
 from sentence_transformers import util
 import torch
 import numpy as np

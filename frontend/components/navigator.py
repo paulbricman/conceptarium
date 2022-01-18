@@ -3,7 +3,7 @@ from sentence_transformers import SentenceTransformer
 import io
 from PIL import Image
 import torch
-import knowledge.knowledge as knowledge
+from . import knowledge
 
 
 def get_name():

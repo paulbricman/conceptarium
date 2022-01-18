@@ -79,6 +79,13 @@ async def microverse_remove_handler(token: str, microverse: str):
 
 
 @app.get('/microverse/list')
-async def microverse_remove_handler(token: str):
+async def microverse_list_handler(token: str):
     auth_result = auth(token)
     return list_microverses(auth_result)
+
+
+@app.get('/custodian/check')
+async def check_custodian():
+    return {
+        'exists': Path('records.json').exists()
+    }

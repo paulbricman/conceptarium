@@ -1,43 +1,31 @@
 import streamlit as st
-import streamlit_authenticator as stauth
-import os
-import json
 
 
 def paint():
     with st.sidebar:
-        st.markdown('#### 📜 custodian')
+        st.markdown('## 🌐 microverses')
 
-        if not os.path.exists('records/custodian.json'):
-            st.warning(
-                'This appears to be a fresh conceptarium instance. Please create a custodian account.')
+        microverses = st.session_state.get('microverses', [])
 
-            username = st.text_input('Username')
-            password = st.text_input('Password', type='password')
+        if len(microverses) > 0:
+            st.markdown('---')
+            st.markdown('### current microverses')
 
-            if st.button('create account'):
-                password = stauth.hasher([password]).generate()[0]
-                token = stauth.hasher([password + 'token']).generate()[0]
-                json.dump({
-                    'username': username,
-                    'password': password,
-                    'token': token
-                }, open('records/custodian.json', 'w'))
-                st.balloons()
-        else:
-            st.warning(
-                'If you\'re the custodian of this conceptarium, please log into your account to access your stored thoughts.')
-            custodian = json.load(open('records/custodian.json'))
-            authenticator = stauth.authenticate([custodian['username']], [custodian['username']], [custodian['password']],
-                                                'custodian_cookie', 'conceptarium', cookie_expiry_days=30)
-            name, authentication_status = authenticator.login(
-                'login', 'sidebar')
+            for e_idx, e in enumerate(microverses):
+                st.code(e[0])
+                if st.button('remove', key=(e, e_idx)):
+                    st.session_state['microverses'] = st.session_state.get(
+                        'microverses', [])
+                    st.session_state['microverses'].remove(e)
+                    st.experimental_rerun()
 
-            if st.session_state['authentication_status']:
-                st.markdown('')
-                st.markdown('##### token')
-                st.code(custodian['token'], language='text')
-            elif st.session_state['authentication_status'] == False:
-                st.error('Username/password is incorrect')
-            elif st.session_state['authentication_status'] == None:
-                st.warning('Please enter your username and password')
+        st.markdown('---')
+        st.markdown('### add new microverse')
+
+        url = st.text_input('conceptarium url')
+        token = st.text_input('microverse token')
+
+        if st.button('add'):
+            st.session_state['microverses'] = st.session_state.get(
+                'microverses', []) + [(url, token)]
+            st.experimental_rerun()
