@@ -1,5 +1,6 @@
 import streamlit as st
-from components import custodian, header, inspector, navigator, viewport, ranker
+from components import header, inspector, navigator, viewport, ranker
+from components import microverses
 
 
 st.set_page_config(
@@ -7,7 +8,7 @@ st.set_page_config(
     layout='wide')
 
 
-custodian.paint()
+microverses.paint()
 header.paint()
 
 cols = st.columns(5)

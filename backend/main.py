@@ -85,7 +85,5 @@ async def microverse_list_handler(token: str):
 
 
 @app.get('/custodian/check')
-async def check_custodian():
-    return {
-        'exists': Path('records.json').exists()
-    }
+async def check_custodian(token: str):
+    return auth(token)

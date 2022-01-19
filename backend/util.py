@@ -48,7 +48,10 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
     authorized_thoughts = sorted(
         authorized_thoughts, key=lambda x: x['relatedness'], reverse=True)
 
-    return authorized_thoughts
+    return {
+        'authorized_thoughts': authorized_thoughts,
+        'query_embeddings': query_embeddings
+    }
 
 
 def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):
