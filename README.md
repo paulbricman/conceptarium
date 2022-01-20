@@ -17,7 +17,7 @@ To deploy the conceptarium using Docker, first make sure to have it installed, t
 **Note**: This installation method is not suitable for the Rasberry Pi or other ARM devices, as they need a special version of `pytorch`. To deploy on those, please follow the second installation option (from source).
 
 ```
-docker run -P paulbricman/conceptarium
+docker run -p 8000:8000 paulbricman/conceptarium
 ```
 
 Your conceptarium should be available at `127.0.0.1:8000`.
