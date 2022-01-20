@@ -1,24 +1,26 @@
 ![mockuper](https://user-images.githubusercontent.com/20104026/133883441-0faae359-9335-46bf-b10c-27ebb8c274b3.png)
 
 # Conceptarium
+
 A conceptarium (noun. /knsɛptɛriəm/, plural: conceptaria) is a fluid medium for storing, relating, and surfacing thoughts based on a new representation of knowledge. It’s meant to provide a foundation for new tools for thought to build onto, a means to nurture a new tooling ecosystem for knowledge work – a cognitive infrastructure. It embodies a philosophy of knowledge which differs in important ways from the one held by the knowledge graph poster children (e.g. Roam Research, Obsidian, Logseq), and can be deployed today in a self-hosted regime, even on a modest Raspberry Pi.
 
 [Read more...](https://paulbricman.com/thoughtware/conceptarium)
 
 # Installation
+
 The conceptarium is a server app which can be deployed on managed hosting (e.g. DigitalOcean) or in a self-hosted regime (e.g. salvaged desktop, Raspberry Pi 4). The app itself takes up about **1GB RAM** when running.
 
 ### Docker
 
-To deploy the conceptarium using Docker, first make sure to have it installed, then simply run the following. 
+To deploy the conceptarium using Docker, first make sure to have it installed, then simply run the following.
 
 **Note**: This installation method is not suitable for the Rasberry Pi or other ARM devices, as they need a special version of `pytorch`. To deploy on those, please follow the second installation option (from source).
 
 ```
-docker run -P paulbricman/conceptarium 
+docker run -P paulbricman/conceptarium
 ```
 
-Your conceptarium should be available at `127.0.0.1:8000`. 
+Your conceptarium should be available at `127.0.0.1:8000`.
 
 ### From Source
 
@@ -27,16 +29,18 @@ To set up the conceptarium, clone the repository, and install the requirements u
 ```
 python3 -m pip install -r requirements.txt
 ```
+
 **Note**: If you plan to deploy your conceptarium on a Raspberry Pi 4, you'll need a version of `pytorch` compiled for ARM devices, such as [pytorch-rpi](https://github.com/ljk53/pytorch-rpi/blob/master/torch-1.9.0a0%2Bgitd69c22d-cp39-cp39-linux_aarch64.whl).
 
 **Note**: Your system might be missing some prior dependencies. The missing packages show up during installation, and Googling one-liners for installing them is rather straightforward. However, for deploying on Ubuntu, you can also look into the [CI/CD tests](https://github.com/Psionica/conceptarium/blob/main/.github/workflows/pytest.yml) for details on setup.
 
 Once the requirements have been installed, start the web server using in the root of the cloned repository:
+
 ```
 python3 -m uvicorn main:app --reload
 ```
 
-Your conceptarium should be available at `127.0.0.1:8000`. 
+Your conceptarium should be available at `127.0.0.1:8000`.
 
 # Usage
 
@@ -63,7 +67,7 @@ The style and color scheme of your conceptarium can be tweaked via `assets/style
 
 # Demos
 
-**Note:** Content listed below uses dummy data and an older design. 
+**Note:** Content listed below uses dummy data and an older design.
 
 AutoKey "I'm feeling lucky" text-to-image
 
