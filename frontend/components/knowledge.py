@@ -10,10 +10,7 @@ def load(modality, query):
 
     for microverse in st.session_state.get('microverses', []):
         url = microverse['url']
-
-        if url[-1] != '/':
-            url += '/'
-        url += 'find'
+        url += '/find'
 
         if modality == 'text':
             response = requests.get(url, params={
@@ -27,6 +24,11 @@ def load(modality, query):
             })
 
         content = json.loads(response.content)
+        new_thoughts = content['authorized_thoughts']
+        for e_idx, e in enumerate(new_thoughts):
+            new_thoughts[e_idx]['conceptarium_url'] = microverse['url']
+            new_thoughts[e_idx]['access_token'] = microverse['token']
+            new_thoughts[e_idx]['auth'] = microverse['auth']
 
         if isinstance(content, dict):
             thoughts += content['authorized_thoughts']

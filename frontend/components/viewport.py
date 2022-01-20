@@ -49,33 +49,12 @@ def paint(cols):
                 if e['modality'] == 'text':
                     st.success(e['content'])
                 elif e['modality'] == 'image':
-                    url = 'http://127.0.0.1:8000/static?token=mytoken&filename=' + \
+                    url = e['conceptarium_url'] + '/static?token=' + e['access_token'] + '&filename=' + \
                         e['content']
-                    print(url)
                     st.image(url)
 
-    # for result_idx, result in enumerate(results):
-    #     results[result_idx]['score'] = (st.session_state['ranker_relatedness'] * result['score']
-    #                                     + st.session_state['ranker_activation'] *
-    #                                     (np.log(thoughts[result['corpus_id']].interest / (1 - 0.9)) - 0.9 * np.log((time.time() - thoughts[result['corpus_id']].timestamp) / (3600 * 24) + 0.1))) \
-    #         * np.random.normal(1, st.session_state['ranker_noise'])
-
-    # results = sorted(
-    #     results, key=lambda result: result['score'], reverse=True)
-
-    # if thoughts[results[0]['corpus_id']].get_content() == st.session_state['navigator_input']:
-    #     results = results[1:]
-
-    # for result_idx, result in enumerate(results):
-    #     with cols[result_idx % len(cols)]:
-    #         thought = thoughts[result['corpus_id']]
-    #         if thought.modality == 'language':
-    #             st.success(thought.get_content())
-    #         elif thought.modality == 'imagery':
-    #             st.image(thought.get_content())
-
-    #         if st.button('jump', thought):
-    #             st.session_state['navigator_input'] = thought.get_content()
-    #             st.session_state['navigator_modality'] = thought.modality
-    #             st.session_state['navigator_embedding'] = thought.embedding
-    #             st.experimental_rerun()
+                if st.button('jump', e['content']):
+                    st.session_state['navigator_input'] = e['content']
+                    st.session_state['navigator_modality'] = e['modality']
+                    st.session_state['navigator_query_embeddings'] = e['embeddings']
+                    st.experimental_rerun()
