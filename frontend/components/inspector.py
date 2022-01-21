@@ -50,3 +50,20 @@ def paint():
                 st.success(st.session_state['navigator_input'])
             elif st.session_state['navigator_modality'] == 'image':
                 st.image(st.session_state['navigator_input'])
+
+            custodian_microverse = [
+                e for e in st.session_state['microverses'] if e['auth']['custodian'] == True]
+            if len(custodian_microverse) > 0:
+                if st.button('save'):
+                    if st.session_state['navigator_modality'] == 'text':
+                        requests.get(custodian_microverse[0]['url'] + '/save', params={
+                            'token': custodian_microverse[0]['token'],
+                            'query': st.session_state['navigator_input']
+                        })
+                    elif st.session_state['navigator_modality'] == 'image':
+                        requests.post(custodian_microverse[0]['url'] + '/save', data={
+                            'token': custodian_microverse[0]['token']}, files={
+                            'query': st.session_state['navigator_input']
+                        })
+                    st.info(
+                        'The thought has been saved, which should be reflected in future navigator jumps.')
