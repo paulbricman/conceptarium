@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from security import auth
-from util import find, save, get_authorized_thoughts
+from util import find, save, get_authorized_thoughts, remove
 from sentence_transformers import SentenceTransformer
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
@@ -47,6 +47,12 @@ async def save_image_handler(query: UploadFile = File(...), token: str = Form(..
     results = save('image', query, auth_result,
                    text_encoder, text_image_encoder)
     return results
+
+
+@app.get('/remove')
+async def remove_handler(filename: str, token: str):
+    auth_result = auth(token)
+    return remove(auth_result, filename)
 
 
 @app.get('/static')

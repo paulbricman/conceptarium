@@ -9,6 +9,7 @@ import secrets
 import time
 import numpy as np
 from numpy.linalg import norm
+import os
 
 
 def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):
@@ -43,7 +44,6 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
         authorized_thoughts[e_idx]['relatedness'] = e
         authorized_thoughts[e_idx]['content'] = get_content(
             authorized_thoughts[e_idx], True)
-        authorized_thoughts[e_idx].pop('filename', None)
 
     authorized_thoughts = sorted(
         authorized_thoughts, key=lambda x: x['relatedness'], reverse=True)
@@ -120,6 +120,27 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=
             return {
                 'message': 'Duplicate thought found.'
             }
+
+
+def remove(auth_result, filename):
+    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+
+    if auth_result['custodian'] == False:
+        return {
+            'message': 'Only the conceptarium\'s custodian can remove thoughts from it.'
+        }
+    else:
+        if not (knowledge_base_path / 'metadata.json').exists():
+            json.dump([], open(knowledge_base_path / 'metadata.json', 'w'))
+
+        thoughts = json.load(open(knowledge_base_path / 'metadata.json'))
+        target = [e for e in thoughts if e['filename'] == filename]
+
+        if len(target) > 0:
+            os.remove(knowledge_base_path / filename)
+            thoughts.remove(target[0])
+            json.dump(thoughts, open(
+                knowledge_base_path / 'metadata.json', 'w'))
 
 
 def get_authorized_thoughts(auth_result):

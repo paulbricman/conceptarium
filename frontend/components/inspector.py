@@ -3,6 +3,7 @@ from . import knowledge
 from datetime import datetime
 import numpy as np
 import time
+import requests
 
 
 def get_name():
@@ -37,7 +38,12 @@ def paint():
 
             if thought['auth']['custodian']:
                 if st.button('remove'):
-                    st.error('Not implemented yet.')
+                    requests.get(thought['conceptarium_url'] + '/remove', params={
+                        'token': thought['access_token'],
+                        'filename': thought['filename']
+                    })
+                    st.info(
+                        'The thought has been removed, which should be reflected in future navigator jumps.')
         else:
             st.markdown('**type**: custom query')
             if st.session_state['navigator_modality'] == 'text':
