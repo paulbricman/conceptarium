@@ -19,7 +19,10 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
         modality, query, text_encoder, text_image_encoder)
 
     if len(authorized_thoughts) == 0:
-        return []
+        return {
+            'authorized_thoughts': [],
+            'query_embeddings': query_embeddings
+        }
 
     sims = []
     for e in authorized_thoughts:
