@@ -4,6 +4,7 @@ from datetime import datetime
 import numpy as np
 import time
 import requests
+import json
 
 
 def get_name():
@@ -67,3 +68,18 @@ def paint():
                         })
                     st.info(
                         'The thought has been saved, which should be reflected in future navigator jumps.')
+                if st.button('share microverse', help='Microverses are shared regions of semantic space.'):
+                    if st.session_state['navigator_modality'] == 'text':
+                        response = requests.get(custodian_microverse[0]['url'] + '/microverse/create', params={
+                            'token': custodian_microverse[0]['token'],
+                            'query': st.session_state['navigator_input']
+                        })
+                    elif st.session_state['navigator_modality'] == 'image':
+                        response = requests.post(custodian_microverse[0]['url'] + '/microverse/create', data={
+                            'token': custodian_microverse[0]['token']}, files={
+                            'query': st.session_state['navigator_input']
+                        })
+
+                    response = json.loads(response.content)['token']
+                    st.info(response)
+                    st.experimental_rerun()

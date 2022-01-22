@@ -5,6 +5,7 @@ import secrets
 import time
 from PIL import Image
 import io
+import os
 
 
 def create_microverse(modality, query, auth_result, text_encoder, text_image_encoder):
@@ -42,13 +43,13 @@ def create_microverse(modality, query, auth_result, text_encoder, text_image_enc
             query.save(knowledge_base_path / filename, quality=50)
 
             microverses = json.load(open(microverses_path))
-            microverses += {
+            microverses += [{
                 "filename": filename,
                 "modality": modality,
                 "timestamp": time.time(),
                 "token": token,
                 "embeddings": query_embedding
-            }
+            }]
             json.dump(microverses, open(microverses_path, 'w'))
 
         return {
@@ -58,6 +59,7 @@ def create_microverse(modality, query, auth_result, text_encoder, text_image_enc
 
 def remove_microverse(auth_result, microverse_token):
     microverses_path = Path('microverses.json')
+    knowledge_base_path = Path('..') / 'knowledge' / 'base'
 
     if auth_result['custodian'] == False:
         return {
@@ -67,7 +69,11 @@ def remove_microverse(auth_result, microverse_token):
         microverses = json.load(open(microverses_path))
         microverses = [
             e for e in microverses if e['token'] != microverse_token]
+        removal_target = [
+            e for e in microverses if e['token'] == microverse_token]
         json.dump(microverses, open(microverses_path, 'w'))
+        if len(removal_target) > 0:
+            os.remove(knowledge_base_path / removal_target[0]['filename'])
 
 
 def list_microverses(auth_result):

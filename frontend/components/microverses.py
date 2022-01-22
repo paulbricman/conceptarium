@@ -5,7 +5,7 @@ import json
 
 def paint():
     with st.sidebar:
-        with st.expander('🌐 connected microverses', expanded=True):
+        with st.expander('🔌 connected microverses', expanded=True):
             microverses = st.session_state.get('microverses', [])
 
             if len(microverses) > 0:
@@ -22,7 +22,7 @@ def paint():
                         st.session_state['microverses'].remove(e)
                         st.experimental_rerun()
 
-        with st.expander('🌐 connect to new microverse', expanded=True):
+        with st.expander('🆕 connect to new microverse', expanded=True):
             url = st.text_input('conceptarium url',
                                 key=st.session_state.get('microverses', []))
             token = st.text_input(
@@ -48,3 +48,22 @@ def paint():
                     }]
 
                 st.experimental_rerun()
+
+        with st.expander('🗝️ shared microverses', expanded=True):
+            custodian_microverse = [
+                e for e in st.session_state.get('microverses', []) if e['auth']['custodian'] == True]
+            if len(custodian_microverse) > 0:
+                shared_microverses = json.loads(requests.get(custodian_microverse[0]['url'] + '/microverse/list', params={
+                    'token': custodian_microverse[0]['token']
+                }).content)
+                for e_idx, e in enumerate(shared_microverses):
+                    st.code(e['token'])
+
+                    if st.button('remove'):
+                        requests.get(custodian_microverse[0]['url'] + '/microverse/remove', params={
+                            'token': custodian_microverse[0]['token'],
+                            'microverse': e['token']
+                        })
+                        st.info(
+                            'The microverse has been removed.')
+                        st.experimental_rerun()
