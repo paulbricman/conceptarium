@@ -157,7 +157,7 @@ def get_authorized_thoughts(auth_result):
     if auth_result['custodian'] == True:
         return thoughts
     else:
-        similarity_threshold = 0.3
+        similarity_threshold = 0.25
         authorized_microverse = auth_result['authorized_microverse']
 
         if authorized_microverse == []:
