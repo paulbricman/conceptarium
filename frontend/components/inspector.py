@@ -38,7 +38,7 @@ def paint():
             st.markdown('**conceptarium**: ' + thought['conceptarium_url'])
 
             if thought['auth']['custodian']:
-                if st.button('remove'):
+                if st.button('remove', help='Delete this thought from your conceptarium. Only available for custodians.'):
                     requests.get(thought['conceptarium_url'] + '/remove', params={
                         'token': thought['access_token'],
                         'filename': thought['filename']
@@ -55,7 +55,7 @@ def paint():
             custodian_microverse = [
                 e for e in st.session_state['microverses'] if e['auth']['custodian'] == True]
             if len(custodian_microverse) > 0:
-                if st.button('save'):
+                if st.button('save', help='Persist this content as a new thought in your conceptarium. Only available for custodians.'):
                     if st.session_state['navigator_modality'] == 'text':
                         requests.get(custodian_microverse[0]['url'] + '/save', params={
                             'token': custodian_microverse[0]['token'],
@@ -68,7 +68,7 @@ def paint():
                         })
                     st.info(
                         'The thought has been saved, which should be reflected in future navigator jumps.')
-                if st.button('share microverse', help='Microverses are shared regions of semantic space.'):
+                if st.button('share microverse', help='Grant access to the past and future search results of this query through a microverse token.'):
                     if st.session_state['navigator_modality'] == 'text':
                         response = requests.get(custodian_microverse[0]['url'] + '/microverse/create', params={
                             'token': custodian_microverse[0]['token'],

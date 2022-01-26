@@ -16,7 +16,7 @@ def paint():
                         display_text = e['url']
                     st.code(display_text)
 
-                    if st.button('remove', key=(e, e_idx)):
+                    if st.button('remove', key=(e, e_idx), help='Remove this source of thoughts.'):
                         st.session_state['microverses'] = st.session_state.get(
                             'microverses', [])
                         st.session_state['microverses'].remove(e)
@@ -24,11 +24,11 @@ def paint():
 
         with st.expander('🆕 connect to new microverse', expanded=True):
             url = st.text_input('conceptarium url',
-                                key=st.session_state.get('microverses', []))
+                                key=st.session_state.get('microverses', []), help='Specify the base URL of the conceptarium you wish to access thoughts from. If you\'re trying to connect to your local instance, enter `localhost`.')
             token = st.text_input(
-                'access token', key=st.session_state.get('microverses', []))
+                'access token', key=st.session_state.get('microverses', []), help='Specify the token to be used in authorizing access to this conceptarium. If you\'re the custodian of this conceptarium, enter your custodian token. If this is someone else\'s instance, please use the microverse token they provided you with.')
 
-            if st.button('add'):
+            if st.button('add', help='Add this conceptarium as a source of thoughts to be explored.'):
                 if '://' not in url:
                     url = 'http://' + url
                 if url[-1] == '/':
@@ -59,7 +59,7 @@ def paint():
                 for e_idx, e in enumerate(shared_microverses):
                     st.code(e['token'])
 
-                    if st.button('remove'):
+                    if st.button('disable', help='Disable the access to this microverse.'):
                         requests.get(custodian_microverse[0]['url'] + '/microverse/remove', params={
                             'token': custodian_microverse[0]['token'],
                             'microverse': e['token']

@@ -56,7 +56,7 @@ def paint(cols):
                         e['content']
                     st.image(url)
 
-                if st.button('jump', e['content']):
+                if st.button('jump', e['content'], help='Use this as the basis of a new search query.'):
                     st.session_state['navigator_input'] = e['content']
                     st.session_state['navigator_modality'] = e['modality']
                     st.session_state['navigator_query_embeddings'] = e['embeddings']
