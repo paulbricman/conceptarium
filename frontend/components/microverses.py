@@ -26,7 +26,7 @@ def paint():
             url = st.text_input('conceptarium url',
                                 key=st.session_state.get('microverses', []), help='Specify the base URL of the conceptarium you wish to access thoughts from. If you\'re trying to connect to your local instance, enter `localhost`.')
             token = st.text_input(
-                'access token', key=st.session_state.get('microverses', []), help='Specify the token to be used in authorizing access to this conceptarium. If you\'re the custodian of this conceptarium, enter your custodian token. If this is someone else\'s instance, please use the microverse token they provided you with.')
+                'access token', key=st.session_state.get('microverses', []), help='Specify the token to be used in authorizing access to this conceptarium. If you\'re the custodian of this conceptarium, enter your custodian token. If this is someone else\'s instance, please use the microverse token they provided you with.', type='password')
 
             if st.button('add', help='Add this conceptarium as a source of thoughts to be explored.'):
                 if '://' not in url:
