@@ -77,14 +77,14 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=
                           'text' and open(knowledge_base_path / e['filename']).read() == query]
 
             if len(duplicates) == 0:
-                filename = secrets.token_urlsafe(8) + '.md'
+                filename = secrets.token_urlsafe(16) + '.md'
                 open(knowledge_base_path / filename, 'w').write(query)
         elif modality == 'image':
             duplicates = [e for e in thoughts if e['modality'] ==
                           'image' and open(knowledge_base_path / e['filename'], 'rb').read() == query]
 
             if len(duplicates) == 0:
-                filename = secrets.token_urlsafe(8) + '.jpg'
+                filename = secrets.token_urlsafe(16) + '.jpg'
                 query = Image.open(io.BytesIO(query)).convert('RGB')
                 query.save(knowledge_base_path / filename, quality=50)
 

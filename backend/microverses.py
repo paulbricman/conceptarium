@@ -22,10 +22,10 @@ def create_microverse(modality, query, auth_result, text_encoder, text_image_enc
 
         query_embedding = encode(
             modality, query, text_encoder, text_image_encoder)
-        token = secrets.token_urlsafe(8)
+        token = secrets.token_urlsafe(16)
 
         if modality == 'text':
-            filename = secrets.token_urlsafe(8) + '.md'
+            filename = secrets.token_urlsafe(16) + '.md'
             open(knowledge_base_path / filename, 'w').write(query)
 
             microverses = json.load(open(microverses_path))
@@ -38,7 +38,7 @@ def create_microverse(modality, query, auth_result, text_encoder, text_image_enc
             }]
             json.dump(microverses, open(microverses_path, 'w'))
         elif modality == 'image':
-            filename = secrets.token_urlsafe(8) + '.jpg'
+            filename = secrets.token_urlsafe(16) + '.jpg'
             query = Image.open(io.BytesIO(query)).convert('RGB')
             query.save(knowledge_base_path / filename, quality=50)
 
