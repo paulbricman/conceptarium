@@ -7,5 +7,6 @@ RUN apt install -y libsasl2-dev python-dev libldap2-dev libssl-dev
 COPY requirements.txt ./requirements.txt
 RUN pip3 install pyOpenSSL uvicorn[standard]
 RUN pip3 install -r requirements.txt
+RUN pip3 install transformers -U
 COPY . .
 CMD python3 -m uvicorn --host 0.0.0.0 main:app
