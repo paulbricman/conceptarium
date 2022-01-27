@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from security import auth
 from util import find, save, get_authorized_thoughts, remove
 from sentence_transformers import SentenceTransformer
@@ -7,16 +7,25 @@ from fastapi import FastAPI, File, Form
 from fastapi.responses import FileResponse
 from pathlib import Path
 from microverses import create_microverse, remove_microverse, list_microverses
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.errors import RateLimitExceeded
 
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["5/minute"])
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
 text_image_encoder = SentenceTransformer('clip-ViT-B-32')
 text_encoder = SentenceTransformer(
     'sentence-transformers/multi-qa-mpnet-base-cos-v1')
 
 
 @app.get('/find')
-async def find_text_handler(query: str, token: str):
+async def find_text_handler(query: str, token: str, request: Request):
     auth_result = auth(token)
     results = find('text', query, auth_result,
                    text_encoder, text_image_encoder)
@@ -24,7 +33,7 @@ async def find_text_handler(query: str, token: str):
 
 
 @app.post('/find')
-async def find_image_handler(query: UploadFile = File(...), token: str = Form(...)):
+async def find_image_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
     query = await query.read()
     auth_result = auth(token)
     results = find('image', query, auth_result,
@@ -33,7 +42,7 @@ async def find_image_handler(query: UploadFile = File(...), token: str = Form(..
 
 
 @app.get('/save')
-async def save_text_handler(query: str, token: str):
+async def save_text_handler(query: str, token: str, request: Request):
     auth_result = auth(token)
     results = save('text', query, auth_result,
                    text_encoder, text_image_encoder)
@@ -41,7 +50,7 @@ async def save_text_handler(query: str, token: str):
 
 
 @app.post('/save')
-async def save_image_handler(query: UploadFile = File(...), token: str = Form(...)):
+async def save_image_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
     query = await query.read()
     auth_result = auth(token)
     results = save('image', query, auth_result,
@@ -50,13 +59,13 @@ async def save_image_handler(query: UploadFile = File(...), token: str = Form(..
 
 
 @app.get('/remove')
-async def remove_handler(filename: str, token: str):
+async def remove_handler(filename: str, token: str, request: Request):
     auth_result = auth(token)
     return remove(auth_result, filename)
 
 
 @app.get('/static')
-async def static_handler(filename: str, token: str):
+async def static_handler(filename: str, token: str, request: Request):
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
 
     auth_result = auth(token)
@@ -66,30 +75,30 @@ async def static_handler(filename: str, token: str):
 
 
 @app.get('/microverse/create')
-async def microverse_create_handler(query: str, token: str):
+async def microverse_create_handler(query: str, token: str, request: Request):
     auth_result = auth(token)
     return create_microverse('text', query, auth_result, text_encoder, text_image_encoder)
 
 
 @app.post('/microverse/create')
-async def microverse_create_handler(query: UploadFile = File(...), token: str = Form(...)):
+async def microverse_create_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
     query = await query.read()
     auth_result = auth(token)
     return create_microverse('image', query, auth_result, text_encoder, text_image_encoder)
 
 
 @app.get('/microverse/remove')
-async def microverse_remove_handler(token: str, microverse: str):
+async def microverse_remove_handler(token: str, microverse: str, request: Request):
     auth_result = auth(token)
     return remove_microverse(auth_result, microverse)
 
 
 @app.get('/microverse/list')
-async def microverse_list_handler(token: str):
+async def microverse_list_handler(token: str, request: Request):
     auth_result = auth(token)
     return list_microverses(auth_result)
 
 
 @app.get('/custodian/check')
-async def check_custodian(token: str):
+async def check_custodian(token: str, request: Request):
     return auth(token)
