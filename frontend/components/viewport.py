@@ -1,11 +1,11 @@
+import requests
 import streamlit as st
-from . import knowledge
-from sentence_transformers import util
-import torch
 import numpy as np
 import time
 import numpy as np
 from numpy.linalg import norm
+from PIL import Image
+import io
 
 
 def get_name():
@@ -54,7 +54,10 @@ def paint(cols):
                 elif e['modality'] == 'image':
                     url = e['conceptarium_url'] + '/static?token=' + e['access_token'] + '&filename=' + \
                         e['content']
-                    st.image(url)
+
+                    response = requests.get(url)
+                    image = Image.open(io.BytesIO(response.content))
+                    st.image(image)
 
                 if st.button('jump', e['content'], help='Use this as the basis of a new search query.'):
                     st.session_state['navigator_input'] = e['content']

@@ -5,6 +5,8 @@ import numpy as np
 import time
 import requests
 import json
+from PIL import Image
+import io
 
 
 def get_name():
@@ -26,7 +28,10 @@ def paint():
             elif thought['modality'] == 'image':
                 url = thought['conceptarium_url'] + '/static?token=' + thought['access_token'] + '&filename=' + \
                     thought['content']
-                st.image(url)
+
+                response = requests.get(url)
+                image = Image.open(io.BytesIO(response.content))
+                st.image(image)
 
             st.markdown('**modality**: ' + thought['modality'])
             st.markdown('**timestamp**: ' + datetime.utcfromtimestamp(
