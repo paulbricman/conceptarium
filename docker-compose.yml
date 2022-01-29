@@ -1,0 +1,31 @@
+version: "3.7"
+
+networks:
+  conceptarium:
+
+services:
+  frontend:
+    build: frontend
+    ports:
+      - 8501:8501
+    networks: 
+      conceptarium: 
+        aliases: 
+          - frontend.docker
+    depends_on:
+      - backend
+    volumes:
+        - ./frontend:/app
+        - ./knowledge:/knowledge
+
+  backend:
+    build: backend
+    ports:
+      - 8000:8000
+    networks: 
+      conceptarium: 
+        aliases: 
+          - backend.docker
+    volumes:
+      - ./backend:/app
+      - ./knowledge:/knowledge
