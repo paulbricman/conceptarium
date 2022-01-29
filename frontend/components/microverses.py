@@ -56,14 +56,18 @@ def paint():
                 shared_microverses = json.loads(requests.get(custodian_microverse[0]['url'] + '/microverse/list', params={
                     'token': custodian_microverse[0]['token']
                 }).content)
-                for e_idx, e in enumerate(shared_microverses):
-                    st.code(e['token'])
 
-                    if st.button('disable', help='Disable the access to this microverse.'):
-                        requests.get(custodian_microverse[0]['url'] + '/microverse/remove', params={
-                            'token': custodian_microverse[0]['token'],
-                            'microverse': e['token']
-                        })
-                        st.info(
-                            'The microverse has been removed.')
-                        st.experimental_rerun()
+                for e_idx, e in enumerate(shared_microverses):
+                    if isinstance(e, dict):
+                        st.code(e['token'])
+                        if e['modality'] == 'text':
+                            st.success(e['content'])
+
+                        if st.button('disable', help='Disable the access to this microverse.'):
+                            requests.get(custodian_microverse[0]['url'] + '/microverse/remove', params={
+                                'token': custodian_microverse[0]['token'],
+                                'microverse': e['token']
+                            })
+                            st.info(
+                                'The microverse has been removed.')
+                            st.experimental_rerun()

@@ -1,7 +1,7 @@
 version: "3.7"
 
 networks:
-  conceptarium:
+  local:
 
 services:
   frontend:
@@ -9,7 +9,7 @@ services:
     ports:
       - 8501:8501
     networks: 
-      conceptarium: 
+      local: 
         aliases: 
           - frontend.docker
     depends_on:
@@ -23,7 +23,7 @@ services:
     ports:
       - 8000:8000
     networks: 
-      conceptarium: 
+      local: 
         aliases: 
           - backend.docker
     volumes:
