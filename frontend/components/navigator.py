@@ -15,7 +15,7 @@ def paint():
                             ['text', 'image'].index(st.session_state.get('navigator_modality', 'text')), help='Select the type of query you want to search with.')
 
     if modality == 'text':
-        input = st.text_area('input', height=300,
+        input = st.text_area('input', height=100,
                              help='Enter the actual contents of your query.')
     elif modality == 'image':
         input = st.file_uploader(

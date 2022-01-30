@@ -162,7 +162,31 @@ for e_idx, e in enumerate(new_thoughts):
 for e_idx, e in enumerate(new_thoughts):
     new_thoughts[e_idx]['filename'] = e['filename'].split('/')[-1]
 
-new_thoughts[0]
+def get_content(thought, json_friendly=False):
+    knowledge_base_path = Path('conceptarium')
+    if thought['modality'] == 'text':
+        content = open(knowledge_base_path / thought['filename']).read()
+    elif thought['modality'] == 'image':
+        content = open(knowledge_base_path / thought['filename'], 'rb').read()
+        if json_friendly:
+            content = thought['filename']
+    return content
 
-json.dump(new_thoughts, open('knowledge/base/metadata.json', 'wb'))
+from sentence_transformers import SentenceTransformer, util
+from pathlib import Path
+from PIL import Image
+import io
+
+text_image_encoder = SentenceTransformer('clip-ViT-B-32')
+text_encoder = SentenceTransformer(
+    'sentence-transformers/multi-qa-mpnet-base-cos-v1')
+
+for e_idx, e in enumerate(new_thoughts):
+    if 'embedding' in e.keys():
+        new_thoughts[e_idx].pop('embedding')
+    embs = encode(new_thoughts[e_idx]['modality'], get_content(new_thoughts[e_idx]), text_encoder, text_image_encoder)
+    new_thoughts[e_idx]['embeddings'] = embs
+
+new_thoughts[0]
+json.dump(new_thoughts, open('conceptarium/metadata.json', 'w'))
 '''
