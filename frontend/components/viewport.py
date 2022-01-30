@@ -41,7 +41,7 @@ def paint(cols):
             score *= np.random.normal(1, noise)
             authorized_thoughts[e_idx]['score'] = score
 
-        similarity_threshold = 0.25
+        similarity_threshold = 0.3
         authorized_thoughts = [
             e for e in authorized_thoughts if e['relatedness'] > similarity_threshold]
         authorized_thoughts = sorted(

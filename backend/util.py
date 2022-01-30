@@ -25,6 +25,7 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
         }
 
     sims = []
+    text_image_scaling = 0.75
     for e in authorized_thoughts:
         if modality == 'text':
             if e['modality'] == 'text':
@@ -32,7 +33,7 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
                     norm(e['embeddings']['text']) * norm(query_embeddings['text']))]
             elif e['modality'] == 'image':
                 sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
-                    norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+                    norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image'])) * text_image_scaling]
         elif modality == 'image':
             sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
                 norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
@@ -89,6 +90,7 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=
                 query.save(knowledge_base_path / filename, quality=50)
 
         sims = []
+        text_image_scaling = 0.75
         for e in thoughts:
             if modality == 'text':
                 if e['modality'] == 'text':
@@ -96,7 +98,7 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=
                         norm(e['embeddings']['text']) * norm(query_embeddings['text']))]
                 elif e['modality'] == 'image':
                     sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
-                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image'])) * text_image_scaling]
             elif modality == 'image':
                 sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
                     norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
@@ -157,13 +159,14 @@ def get_authorized_thoughts(auth_result):
     if auth_result['custodian'] == True:
         return thoughts
     else:
-        similarity_threshold = 0.25
+        similarity_threshold = 0.3
         authorized_microverse = auth_result['authorized_microverse']
 
         if authorized_microverse == []:
             return []
 
         query_embeddings = authorized_microverse[0]['embeddings']
+        text_image_scaling = 0.75
         sims = []
         for e in thoughts:
             if authorized_microverse[0]['modality'] == 'text':
@@ -172,7 +175,7 @@ def get_authorized_thoughts(auth_result):
                         norm(e['embeddings']['text']) * norm(query_embeddings['text']))]
                 elif e['modality'] == 'image':
                     sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
-                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
+                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image'])) * text_image_scaling]
             elif authorized_microverse[0]['modality'] == 'image':
                 sims += [np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
                     norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))]
