@@ -21,6 +21,8 @@ def paint(cols):
         activation = st.session_state['ranker_activation']
         noise = st.session_state['ranker_noise']
 
+        text_image_scaling = 1
+        image_image_scaling = 0.4
         for e in authorized_thoughts:
             if modality == 'text':
                 if e['modality'] == 'text':
@@ -28,10 +30,10 @@ def paint(cols):
                         norm(e['embeddings']['text']) * norm(query_embeddings['text']))
                 elif e['modality'] == 'image':
                     sim = np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
-                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))
+                        norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image'])) * text_image_scaling
             elif modality == 'image':
                 sim = np.dot(e['embeddings']['text_image'], query_embeddings['text_image']) / (
-                    norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image']))
+                    norm(e['embeddings']['text_image']) * norm(query_embeddings['text_image'])) * image_image_scaling
             e['relatedness'] = sim
 
         for e_idx, e in enumerate(authorized_thoughts):
@@ -59,7 +61,7 @@ def paint(cols):
                     image = Image.open(io.BytesIO(response.content))
                     st.image(image)
 
-                if st.button('jump', e['content'], help='Use this as the basis of a new search query.'):
+                if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):
                     st.session_state['navigator_input'] = e['content']
                     st.session_state['navigator_modality'] = e['modality']
                     st.session_state['navigator_query_embeddings'] = e['embeddings']
