@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import json
 import io
+from PIL import Image
 
 
 def load(modality, query):
@@ -18,6 +19,13 @@ def load(modality, query):
                 'query': query
             })
         elif modality == 'image':
+            img_io = io.BytesIO()
+            query = Image.open(io.BytesIO(query.getvalue())
+                               ).convert('RGB')
+            query.save(img_io, 'jpeg')
+            img_io.seek(0)
+            query = img_io.read()
+
             response = requests.post(url, data={
                 'token': microverse['token']}, files={
                 'query': query
