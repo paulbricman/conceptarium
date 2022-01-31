@@ -10,9 +10,11 @@ import time
 import numpy as np
 from numpy.linalg import norm
 import os
+import time
 
 
 def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):
+    start = time.time()
     authorized_thoughts = get_authorized_thoughts(auth_result)
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
     query_embeddings = encode(
@@ -42,8 +44,8 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
     if not silent and auth_result['custodian']:
         for e_idx, e in enumerate(sims):
             authorized_thoughts[e_idx]['interest'] += e
-        json.dump(authorized_thoughts, open(
-            knowledge_base_path / 'metadata.json', 'w'))
+        open(knowledge_base_path / 'metadata.json',
+             'w').write(json.dumps(authorized_thoughts))
 
     for e_idx, e in enumerate(sims):
         authorized_thoughts[e_idx]['relatedness'] = e
@@ -68,7 +70,7 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=
         }
     else:
         if not (knowledge_base_path / 'metadata.json').exists():
-            json.dump([], open(knowledge_base_path / 'metadata.json', 'w'))
+            open(knowledge_base_path / 'metadata.json', 'w').write(json.dumps([]))
 
         query_embeddings = encode(
             modality, query, text_encoder, text_image_encoder)
@@ -119,8 +121,8 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=
             }
 
             thoughts += [new_thought]
-            json.dump(thoughts, open(
-                knowledge_base_path / 'metadata.json', 'w'))
+            open(knowledge_base_path / 'metadata.json',
+                 'w').write(json.dumps(thoughts))
 
             return new_thought
         else:
@@ -138,7 +140,7 @@ def remove(auth_result, filename):
         }
     else:
         if not (knowledge_base_path / 'metadata.json').exists():
-            json.dump([], open(knowledge_base_path / 'metadata.json', 'w'))
+            open(knowledge_base_path / 'metadata.json', 'w').write(json.dumps([]))
 
         thoughts = json.load(open(knowledge_base_path / 'metadata.json'))
         target = [e for e in thoughts if e['filename'] == filename]
@@ -146,15 +148,15 @@ def remove(auth_result, filename):
         if len(target) > 0:
             os.remove(knowledge_base_path / filename)
             thoughts.remove(target[0])
-            json.dump(thoughts, open(
-                knowledge_base_path / 'metadata.json', 'w'))
+            open(knowledge_base_path / 'metadata.json',
+                 'w').write(json.dumps(thoughts))
 
 
 def get_authorized_thoughts(auth_result):
     metadata_path = Path('..') / 'knowledge' / 'base' / 'metadata.json'
 
     if not (metadata_path).exists():
-        json.dump([], open(metadata_path, 'w'))
+        open(metadata_path, 'w').write(json.dumps([]))
 
     thoughts = json.load(open(metadata_path))
 
