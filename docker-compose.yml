@@ -5,7 +5,7 @@ networks:
 
 services:
   frontend:
-    build: frontend
+    image: paulbricman/conceptarium_frontend
     ports:
       - 8501:8501
     networks: 
@@ -19,7 +19,7 @@ services:
         - ./knowledge:/knowledge
 
   backend:
-    build: backend
+    image: paulbricman/conceptarium_backend
     ports:
       - 8000:8000
     networks: 
