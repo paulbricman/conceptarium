@@ -1,7 +1,38 @@
-# 🚧 under construction 🚧
+|screenshot 1|screenshot 2|
+|-|-|
+|![Screenshot from 2022-02-01 12-19-30](https://user-images.githubusercontent.com/20104026/151968818-df3521d8-ea04-48a1-a21b-8cbb54f84bea.png)|![Screenshot from 2022-02-01 12-24-48](https://user-images.githubusercontent.com/20104026/151970146-2895a808-26af-4761-b087-57314b59a3b3.png)
 
-I'm working on a complete redesign of the conceptarium, based on [this](https://paulbricman.com/reflections/sharing-searches) and [this](https://paulbricman.com/reflections/thinking-in-public). Here's a sneak peek:
+# 💡 conceptarium
 
-![Screenshot from 2022-01-20 13-55-54](https://user-images.githubusercontent.com/20104026/150335283-8c723219-b7b5-4175-839d-aae41ef3bf8d.png)
+The conceptarium is an **experimental** personal knowledge base designed to weave AI capabilities into knowledge work. Its main features include:
+- powerful multi-modal search across ideas
+- sharing [microverses of knowledge](https://paulbricman.com/reflections/sharing-searches) with peers
+- ranking items by Anki-like activation, so as to promote serendipity
 
-The previous version is still easily accessible via the latest release, though I'll focus on this new one entirely. Hopefully, next time I'll learn how to manage a release cycle properly!
+
+## installation
+
+#### docker
+
+After installing docker and docker-compose, run:
+
+```
+curl -fsS https://raw.githubusercontent.com/paulbricman/conceptarium/main/docker-compose.yml | docker-compose -f - up -d
+```
+
+#### from source
+
+After pulling this repo run:
+
+```
+python3 -m pip install -r frontend/requirements.txt
+python3 -m pip install -r backend/requirements.txt
+streamlit run frontend/main.py
+python3 -m uvicorn backend/main:app --reload
+```
+
+## usage
+
+The web app should then be available at `localhost:8501`, while the API at `localhost:8000` (with docs at `localhost:8000/docs`). The backend component takes a few minutes to get the ML models at first.
+
+To access your local instance, enter the conceptarium URL (i.e. `localhost` if you ran from source, `backend.docker` if you used docker), and your desired token. Remember your token, as you'll have to use it to authenticate in future sessions.
