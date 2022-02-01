@@ -27,9 +27,13 @@ After pulling this repo run:
 ```
 python3 -m pip install -r frontend/requirements.txt
 python3 -m pip install -r backend/requirements.txt
+
+# on separate sessions:
 streamlit run frontend/main.py
 python3 -m uvicorn backend/main:app --reload
 ```
+
+Missing dependencies? Please have a look at `frontend/Dockerfile` and `backend/Dockerfile`.
 
 ## usage
 
