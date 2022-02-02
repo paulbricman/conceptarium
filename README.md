@@ -27,13 +27,14 @@ After pulling this repo run:
 ```
 python3 -m pip install -r frontend/requirements.txt
 python3 -m pip install -r backend/requirements.txt
-
-# on separate sessions:
 streamlit run frontend/main.py
-python3 -m uvicorn backend/main:app --reload
+
+# in a separate session:
+cd backend
+python3 -m uvicorn main:app --reload
 ```
 
-Missing dependencies? Please have a look at `frontend/Dockerfile` and `backend/Dockerfile`.
+Missing dependencies? Please have a look at `frontend/Dockerfile` and `backend/Dockerfile`. ARM architecture (e.g. Raspberry Pi)? Remove the `torch` entries from `requirements.txt`, and install a [custom-built version](https://github.com/ljk53/pytorch-rpi).
 
 ## usage
 
