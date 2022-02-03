@@ -4,7 +4,7 @@ from util import find, save, get_authorized_thoughts, remove
 from sentence_transformers import SentenceTransformer
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, ORJSONResponse
 from pathlib import Path
 from microverses import create_microverse, remove_microverse, list_microverses
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -24,7 +24,7 @@ text_encoder = SentenceTransformer(
     'sentence-transformers/multi-qa-mpnet-base-cos-v1')
 
 
-@app.get('/find')
+@app.get('/find', response_class=ORJSONResponse)
 async def find_text_handler(query: str, token: str, request: Request):
     auth_result = auth(token)
     results = find('text', query, auth_result,
@@ -32,7 +32,7 @@ async def find_text_handler(query: str, token: str, request: Request):
     return results
 
 
-@app.post('/find')
+@app.post('/find', response_class=ORJSONResponse)
 async def find_image_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
     query = await query.read()
     auth_result = auth(token)

@@ -48,13 +48,19 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
              'w').write(json.dumps(authorized_thoughts))
 
     for e_idx, e in enumerate(sims):
-        authorized_thoughts[e_idx]['relatedness'] = e
+        authorized_thoughts[e_idx]['relatedness'] = float(e)
+        authorized_thoughts[e_idx]['interest'] = float(
+            authorized_thoughts[e_idx]['interest'])
         authorized_thoughts[e_idx]['content'] = get_content(
             authorized_thoughts[e_idx], True)
 
     authorized_thoughts = sorted(
         authorized_thoughts, key=lambda x: x['relatedness'], reverse=True)
 
+    pickle.dump({
+        'authorized_thoughts': authorized_thoughts,
+        'query_embeddings': query_embeddings
+    }, open('response.pickle', 'wb'))
     return {
         'authorized_thoughts': authorized_thoughts,
         'query_embeddings': query_embeddings
