@@ -199,13 +199,13 @@ def encode(modality, content, text_encoder, text_image_encoder):
         return {
             'text_model': 'sentence-transformers/multi-qa-mpnet-base-cos-v1',
             'text_image_model': 'clip-ViT-B-32',
-            'text': [round(e, 6) for e in text_encoder.encode(content).tolist()],
-            'text_image': [round(e, 6) for e in text_image_encoder.encode(content).tolist()]
+            'text': [round(e, 5) for e in text_encoder.encode(content).tolist()],
+            'text_image': [round(e, 5) for e in text_image_encoder.encode(content).tolist()]
         }
     elif modality == 'image':
         return {
             'text_image_model': 'clip-ViT-B-32',
-            'text_image': [round(e, 6) for e in text_image_encoder.encode(Image.open(io.BytesIO(content))).tolist()]
+            'text_image': [round(e, 5) for e in text_image_encoder.encode(Image.open(io.BytesIO(content))).tolist()]
         }
     else:
         raise Exception('Can\'t encode content of modality "' + modality + '"')

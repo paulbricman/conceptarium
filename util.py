@@ -157,7 +157,7 @@ for e_idx, e in enumerate(new_thoughts):
     new_thoughts[e_idx]['embedding'] = e['embedding'].tolist()
 
 for e_idx, e in enumerate(new_thoughts):
-    new_thoughts[e_idx]['embedding'] = [round(f, 6) for f in e['embedding']]
+    new_thoughts[e_idx]['embedding'] = [round(f, 5) for f in e['embedding']]
 
 for e_idx, e in enumerate(new_thoughts):
     new_thoughts[e_idx]['filename'] = e['filename'].split('/')[-1]
