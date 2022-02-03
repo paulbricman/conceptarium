@@ -31,13 +31,13 @@ def load(modality, query):
             query = img_io.read()
 
             response = requests.post(url, data={
-                'token': microverse['token']}, files={
-                'query': query,
+                'token': microverse['token'],
                 'relatedness': st.session_state['ranker_relatedness'],
                 'activation': st.session_state['ranker_activation'],
                 'noise': st.session_state['ranker_noise'],
                 'return_embeddings': False
-            })
+            }, files={
+                'query': query})
 
         content = json.loads(response.content)
         new_thoughts = content['authorized_thoughts']
