@@ -13,8 +13,7 @@ import os
 import time
 
 
-def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):
-    start = time.time()
+def find(modality, query, relatedness, activation, noise, return_embeddings, auth_result, text_encoder, text_image_encoder, silent=False):
     authorized_thoughts = get_authorized_thoughts(auth_result)
     knowledge_base_path = Path('..') / 'knowledge' / 'base'
     query_embeddings = encode(
@@ -53,14 +52,29 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
             authorized_thoughts[e_idx]['interest'])
         authorized_thoughts[e_idx]['content'] = get_content(
             authorized_thoughts[e_idx], True)
+        if not return_embeddings:
+            if 'embeddings' in authorized_thoughts[e_idx]:
+                authorized_thoughts[e_idx].pop('embeddings')
 
-    authorized_thoughts = sorted(
-        authorized_thoughts, key=lambda x: x['relatedness'], reverse=True)
+    authorized_thoughts = rank(
+        authorized_thoughts, relatedness, activation, noise)
 
-    return {
-        'authorized_thoughts': authorized_thoughts,
-        'query_embeddings': query_embeddings
+    response = {
+        'authorized_thoughts': authorized_thoughts
     }
+
+    if return_embeddings:
+        response['query_embeddings'] = query_embeddings
+
+    return response
+
+
+def rank(authorized_thoughts, relatedness, activation, noise):
+    return sorted(authorized_thoughts, reverse=True, key=lambda x:
+                  (relatedness * x['relatedness'] +
+                   activation * (np.log(x['interest'] / (1 - 0.9)) - 0.9 * np.log(
+                       (time.time() - x['timestamp']) / (3600 * 24) + 0.1))) *
+                  np.random.normal(1, noise))
 
 
 def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):

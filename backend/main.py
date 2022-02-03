@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from security import auth
-from util import find, save, get_authorized_thoughts, remove
+from util import find, rank, save, get_authorized_thoughts, remove
 from sentence_transformers import SentenceTransformer
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
@@ -25,19 +25,53 @@ text_encoder = SentenceTransformer(
 
 
 @app.get('/find', response_class=ORJSONResponse)
-async def find_text_handler(query: str, token: str, request: Request):
+async def find_text_handler(
+    query: str,
+    token: str,
+    relatedness: float = 0.8,
+    activation: float = 0.,
+    noise: float = 0.1,
+    return_embeddings: bool = False,
+    request: Request = None
+):
     auth_result = auth(token)
-    results = find('text', query, auth_result,
-                   text_encoder, text_image_encoder)
+    results = find(
+        'text',
+        query,
+        relatedness,
+        activation,
+        noise,
+        return_embeddings,
+        auth_result,
+        text_encoder,
+        text_image_encoder
+    )
     return results
 
 
 @app.post('/find', response_class=ORJSONResponse)
-async def find_image_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
+async def find_image_handler(
+    query: UploadFile = File(...),
+    token: str = Form(...),
+    relatedness: float = Form(0.8),
+    activation: float = Form(0.),
+    noise: float = Form(0.1),
+    return_embeddings: bool = Form(False),
+    request: Request = None
+):
     query = await query.read()
     auth_result = auth(token)
-    results = find('image', query, auth_result,
-                   text_encoder, text_image_encoder)
+    results = find(
+        'image',
+        query,
+        relatedness,
+        activation,
+        noise,
+        return_embeddings,
+        auth_result,
+        text_encoder,
+        text_image_encoder
+    )
     return results
 
 
