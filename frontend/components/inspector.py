@@ -14,7 +14,7 @@ def get_name():
 
 
 def paint():
-    if st.session_state.get('navigator_query_embeddings', None) is not None:
+    if st.session_state.get('authorized_thoughts', None) is not None:
         thoughts = st.session_state['authorized_thoughts']
 
         match = [

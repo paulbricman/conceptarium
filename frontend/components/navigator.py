@@ -22,8 +22,7 @@ def paint():
             'input', help='Enter the actual contents of your query.')
 
     if st.button('jump', help='Click to search for thoughts based on the specified query.'):
-        query_embeddings, authorized_thoughts = knowledge.load(modality, input)
-        st.session_state['authorized_thoughts'] = authorized_thoughts
+        st.session_state['authorized_thoughts'] = knowledge.load(
+            modality, input)
         st.session_state['navigator_modality'] = modality
-        st.session_state['navigator_query_embeddings'] = query_embeddings
         st.session_state['navigator_input'] = input

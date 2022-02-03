@@ -32,21 +32,21 @@ async def find_text_handler(
     activation: float = 0.,
     noise: float = 0.1,
     return_embeddings: bool = False,
+    silent: bool = False,
     request: Request = None
 ):
-    auth_result = auth(token)
-    results = find(
+    return find(
         'text',
         query,
         relatedness,
         activation,
         noise,
         return_embeddings,
-        auth_result,
+        auth(token),
         text_encoder,
-        text_image_encoder
+        text_image_encoder,
+        silent
     )
-    return results
 
 
 @app.post('/find', response_class=ORJSONResponse)
@@ -57,22 +57,22 @@ async def find_image_handler(
     activation: float = Form(0.),
     noise: float = Form(0.1),
     return_embeddings: bool = Form(False),
+    silent: bool = Form(False),
     request: Request = None
 ):
     query = await query.read()
-    auth_result = auth(token)
-    results = find(
+    return find(
         'image',
         query,
         relatedness,
         activation,
         noise,
         return_embeddings,
-        auth_result,
+        auth(token),
         text_encoder,
-        text_image_encoder
+        text_image_encoder,
+        silent
     )
-    return results
 
 
 @app.get('/save')

@@ -16,7 +16,11 @@ def load(modality, query):
         if modality == 'text':
             response = requests.get(url, params={
                 'token': microverse['token'],
-                'query': query
+                'query': query,
+                'relatedness': st.session_state['ranker_relatedness'],
+                'activation': st.session_state['ranker_activation'],
+                'noise': st.session_state['ranker_noise'],
+                'return_embeddings': False
             })
         elif modality == 'image':
             img_io = io.BytesIO()
@@ -28,7 +32,11 @@ def load(modality, query):
 
             response = requests.post(url, data={
                 'token': microverse['token']}, files={
-                'query': query
+                'query': query,
+                'relatedness': st.session_state['ranker_relatedness'],
+                'activation': st.session_state['ranker_activation'],
+                'noise': st.session_state['ranker_noise'],
+                'return_embeddings': False
             })
 
         content = json.loads(response.content)
@@ -40,6 +48,5 @@ def load(modality, query):
 
         if isinstance(content, dict):
             thoughts += content['authorized_thoughts']
-            query_embeddings = content['query_embeddings']
 
-    return query_embeddings, thoughts
+    return thoughts
