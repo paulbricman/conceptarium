@@ -20,18 +20,20 @@ def paint(cols):
         for e_idx, e in enumerate(authorized_thoughts):
             with cols[e_idx % len(cols)]:
                 if e['modality'] == 'text':
+                    content = e['content']
                     st.success(e['content'])
                 elif e['modality'] == 'image':
                     url = e['conceptarium_url'] + '/static?token=' + e['access_token'] + '&filename=' + \
                         e['content']
 
                     response = requests.get(url)
-                    image = Image.open(io.BytesIO(response.content))
-                    st.image(image)
+                    content = response.content
+                    content = Image.open(io.BytesIO(content))
+                    st.image(content)
 
                 if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):
-                    st.session_state['navigator_input'] = e['content']
+                    st.session_state['navigator_input'] = content
                     st.session_state['navigator_modality'] = e['modality']
                     st.session_state['authorized_thoughts'] = knowledge.load(
-                        e['modality'], e['content'])
+                        e['modality'], content)
                     st.experimental_rerun()

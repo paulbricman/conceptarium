@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit.uploaded_file_manager import UploadedFile
 import requests
 import json
 import io
@@ -23,9 +24,11 @@ def load(modality, query):
                 'return_embeddings': False
             })
         elif modality == 'image':
+            if isinstance(query, UploadedFile):
+                query = Image.open(io.BytesIO(query.getvalue()))
+
             img_io = io.BytesIO()
-            query = Image.open(io.BytesIO(query.getvalue())
-                               ).convert('RGB')
+            query = query.convert('RGB')
             query.save(img_io, 'jpeg')
             img_io.seek(0)
             query = img_io.read()
