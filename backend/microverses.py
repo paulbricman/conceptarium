@@ -84,6 +84,9 @@ def list_microverses(auth_result):
             'message': 'Only the conceptarium\'s custodian can list all microverses in it.'
         }
     else:
+        if not microverses_path.exists():
+            json.dump([], open(microverses_path, 'w'))
+
         microverses = json.load(open(microverses_path))
 
         for e_idx, e in enumerate(microverses):
