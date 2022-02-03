@@ -57,10 +57,6 @@ def find(modality, query, auth_result, text_encoder, text_image_encoder, silent=
     authorized_thoughts = sorted(
         authorized_thoughts, key=lambda x: x['relatedness'], reverse=True)
 
-    pickle.dump({
-        'authorized_thoughts': authorized_thoughts,
-        'query_embeddings': query_embeddings
-    }, open('response.pickle', 'wb'))
     return {
         'authorized_thoughts': authorized_thoughts,
         'query_embeddings': query_embeddings
