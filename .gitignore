@@ -1,5 +1,5 @@
 __pycache__/*
 backend/__pycache__/*
-knowledge/base/*
+knowledge/*
 backend/records.json
 backend/microverses.json

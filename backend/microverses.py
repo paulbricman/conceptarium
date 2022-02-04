@@ -9,7 +9,7 @@ import os
 
 
 def create_microverse(modality, query, auth_result, text_encoder, text_image_encoder):
-    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    knowledge_base_path = Path('..') / 'knowledge'
     microverses_path = Path('microverses.json')
 
     if auth_result['custodian'] == False:
@@ -59,7 +59,7 @@ def create_microverse(modality, query, auth_result, text_encoder, text_image_enc
 
 def remove_microverse(auth_result, microverse_token):
     microverses_path = Path('microverses.json')
-    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    knowledge_base_path = Path('..') / 'knowledge'
 
     if auth_result['custodian'] == False:
         return {

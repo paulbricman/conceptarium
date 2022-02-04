@@ -101,7 +101,7 @@ async def remove_handler(filename: str, token: str, request: Request):
 @app.get('/static')
 @limiter.limit("200/minute")
 async def static_handler(filename: str, token: str, request: Request):
-    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    knowledge_base_path = Path('..') / 'knowledge'
 
     auth_result = auth(token)
     thoughts = get_authorized_thoughts(auth_result)

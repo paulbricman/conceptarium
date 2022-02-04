@@ -15,7 +15,7 @@ import time
 
 def find(modality, query, relatedness, activation, noise, return_embeddings, auth_result, text_encoder, text_image_encoder, silent=False):
     authorized_thoughts = get_authorized_thoughts(auth_result)
-    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    knowledge_base_path = Path('..') / 'knowledge'
     query_embeddings = encode(
         modality, query, text_encoder, text_image_encoder)
 
@@ -78,7 +78,7 @@ def rank(authorized_thoughts, relatedness, activation, noise):
 
 
 def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):
-    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    knowledge_base_path = Path('..') / 'knowledge'
 
     if auth_result['custodian'] == False:
         return {
@@ -148,7 +148,7 @@ def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=
 
 
 def remove(auth_result, filename):
-    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    knowledge_base_path = Path('..') / 'knowledge'
 
     if auth_result['custodian'] == False:
         return {
@@ -169,7 +169,7 @@ def remove(auth_result, filename):
 
 
 def get_authorized_thoughts(auth_result):
-    metadata_path = Path('..') / 'knowledge' / 'base' / 'metadata.json'
+    metadata_path = Path('..') / 'knowledge' / 'metadata.json'
 
     if not (metadata_path).exists():
         open(metadata_path, 'w').write(json.dumps([]))
@@ -226,7 +226,7 @@ def encode(modality, content, text_encoder, text_image_encoder):
 
 
 def get_content(thought, json_friendly=False):
-    knowledge_base_path = Path('..') / 'knowledge' / 'base'
+    knowledge_base_path = Path('..') / 'knowledge'
 
     if thought['modality'] == 'text':
         content = open(knowledge_base_path / thought['filename']).read()

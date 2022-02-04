@@ -15,7 +15,6 @@ services:
     depends_on:
       - backend
     volumes:
-        - ./frontend:/app
         - ./knowledge:/knowledge
 
   backend:
@@ -27,5 +26,4 @@ services:
         aliases: 
           - backend.docker
     volumes:
-      - ./backend:/app
       - ./knowledge:/knowledge
