@@ -17,8 +17,12 @@ The conceptarium is an **experimental** personal knowledge base designed to weav
 After installing docker and docker-compose, run:
 
 ```
-curl -fsS https://raw.githubusercontent.com/paulbricman/conceptarium/main/docker-compose.yml | docker-compose -f - up -d
+curl -fsS https://raw.githubusercontent.com/paulbricman/conceptarium/main/docker-compose.yml -o docker-compose.yml
+mkdir knowledge
+docker-compose up -d
 ```
+
+Note that you'll have to wait a bit initially for the models to be downloaded in the docker container. Use `docker logs <backend container ID>` or watch the process's memory for feedback on that. Or just try using it until it via the API or UI until it works (see usage).
 
 #### from source
 
