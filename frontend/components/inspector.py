@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit.uploaded_file_manager import UploadedFile
 from . import knowledge
 from datetime import datetime
 import numpy as np
@@ -67,9 +68,19 @@ def paint():
                             'query': st.session_state['navigator_input']
                         })
                     elif st.session_state['navigator_modality'] == 'image':
+                        query = st.session_state['navigator_input']
+                        if isinstance(query, UploadedFile):
+                            query = Image.open(io.BytesIO(query.getvalue()))
+                        
+                        img_io = io.BytesIO()
+                        query = query.convert('RGB')
+                        query.save(img_io, 'jpeg')
+                        img_io.seek(0)
+                        query = img_io.read()
+                        
                         requests.post(custodian_microverse[0]['url'] + '/save', data={
                             'token': custodian_microverse[0]['token']}, files={
-                            'query': st.session_state['navigator_input']
+                            'query': query
                         })
                     st.info(
                         'The thought has been saved, which should be reflected in future navigator jumps.')
@@ -80,9 +91,19 @@ def paint():
                             'query': st.session_state['navigator_input']
                         })
                     elif st.session_state['navigator_modality'] == 'image':
+                        query = st.session_state['navigator_input']
+                        if isinstance(query, UploadedFile):
+                            query = Image.open(io.BytesIO(query.getvalue()))
+                        
+                        img_io = io.BytesIO()
+                        query = query.convert('RGB')
+                        query.save(img_io, 'jpeg')
+                        img_io.seek(0)
+                        query = img_io.read()
+                        
                         response = requests.post(custodian_microverse[0]['url'] + '/microverse/create', data={
                             'token': custodian_microverse[0]['token']}, files={
-                            'query': st.session_state['navigator_input']
+                            'query': query
                         })
 
                     response = json.loads(response.content)['token']
