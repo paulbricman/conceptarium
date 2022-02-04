@@ -217,9 +217,17 @@ def encode(modality, content, text_encoder, text_image_encoder):
             'text_image': [round(e, 5) for e in text_image_encoder.encode(content).tolist()]
         }
     elif modality == 'image':
+        content = Image.open(io.BytesIO(content))
+        img_io = io.BytesIO()
+        content = content.convert('RGB')
+        content.save(img_io, 'jpeg')
+        img_io.seek(0)
+        content = img_io.read()
+        content = Image.open(img_io)
+
         return {
             'text_image_model': 'clip-ViT-B-32',
-            'text_image': [round(e, 5) for e in text_image_encoder.encode(Image.open(io.BytesIO(content))).tolist()]
+            'text_image': [round(e, 5) for e in text_image_encoder.encode(content).tolist()]
         }
     else:
         raise Exception('Can\'t encode content of modality "' + modality + '"')
