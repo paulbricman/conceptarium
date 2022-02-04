@@ -19,7 +19,6 @@ services:
         - ./knowledge:/knowledge
 
   backend:
-    build: backend
     image: paulbricman/conceptarium_backend:latest
     ports:
       - 8000:8000
