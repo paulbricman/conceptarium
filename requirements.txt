@@ -1,0 +1,6 @@
+torch==1.9.0
+sentence_transformers==2.0.0
+requests==2.22.0
+numpy==1.17.4
+streamlit==1.4.0
+Pillow==9.0.0
