@@ -16,6 +16,14 @@ def paint():
                         display_text = e['url']
                     st.code(display_text)
 
+                    if e['auth']['custodian']:
+                        if st.button('create archive'):
+                            archive = requests.get(e['url'] + '/dump', params={
+                                'token': e['token']
+                            }).content
+                            st.download_button(
+                                'download archive', data=archive, file_name='knowledge.zip')
+
                     if st.button('remove', key=(e, e_idx), help='Remove this source of thoughts.'):
                         st.session_state['microverses'] = st.session_state.get(
                             'microverses', [])
