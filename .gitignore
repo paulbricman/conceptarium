@@ -3,3 +3,4 @@ backend/__pycache__/*
 knowledge/*
 backend/records.json
 backend/microverses.json
+*.zip

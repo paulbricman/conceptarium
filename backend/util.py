@@ -1,16 +1,15 @@
 import json
-from operator import mod
 from pathlib import Path
 from PIL import Image
 import io
-from sentence_transformers import util
-import torch
 import secrets
 import time
 import numpy as np
 from numpy.linalg import norm
 import os
 import time
+import shutil
+from fastapi.responses import FileResponse
 
 
 def find(modality, query, relatedness, activation, noise, return_embeddings, auth_result, text_encoder, text_image_encoder, silent=False):
@@ -245,3 +244,16 @@ def get_content(thought, json_friendly=False):
             content = thought['filename']
 
     return content
+
+
+def dump(auth_result):
+    knowledge_base_path = Path('..') / 'knowledge'
+    archive_path = Path('..') / 'knowledge.zip'
+
+    if auth_result['custodian'] == False:
+        return {
+            'message': 'Only the conceptarium\'s custodian can download its full contents as an archive.'
+        }
+    else:
+        shutil.make_archive(knowledge_base_path, 'zip', knowledge_base_path)
+        return FileResponse(archive_path, filename='knowledge.zip')

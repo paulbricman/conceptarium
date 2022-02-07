@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from security import auth
-from util import find, rank, save, get_authorized_thoughts, remove
+from util import find, rank, save, get_authorized_thoughts, remove, dump
 from sentence_transformers import SentenceTransformer
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
@@ -92,6 +92,11 @@ async def save_image_handler(query: UploadFile = File(...), token: str = Form(..
 @app.get('/remove')
 async def remove_handler(filename: str, token: str, request: Request):
     return remove(auth(token), filename)
+
+
+@app.get('/dump')
+async def save_text_handler(token: str, request: Request):
+    return dump(auth(token))
 
 
 @app.get('/static')
