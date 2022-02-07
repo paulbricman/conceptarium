@@ -77,61 +77,51 @@ async def find_image_handler(
 
 @app.get('/save')
 async def save_text_handler(query: str, token: str, request: Request):
-    auth_result = auth(token)
-    results = save('text', query, auth_result,
-                   text_encoder, text_image_encoder)
-    return results
+    return save('text', query, auth(token),
+                text_encoder, text_image_encoder)
 
 
 @app.post('/save')
 async def save_image_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
     query = await query.read()
-    auth_result = auth(token)
-    results = save('image', query, auth_result,
+    results = save('image', query, auth(token),
                    text_encoder, text_image_encoder)
     return results
 
 
 @app.get('/remove')
 async def remove_handler(filename: str, token: str, request: Request):
-    auth_result = auth(token)
-    return remove(auth_result, filename)
+    return remove(auth(token), filename)
 
 
 @app.get('/static')
 @limiter.limit("200/minute")
 async def static_handler(filename: str, token: str, request: Request):
     knowledge_base_path = Path('..') / 'knowledge'
-
-    auth_result = auth(token)
-    thoughts = get_authorized_thoughts(auth_result)
+    thoughts = get_authorized_thoughts(auth(token))
     if filename in [e['filename'] for e in thoughts]:
         return FileResponse(knowledge_base_path / filename)
 
 
 @app.get('/microverse/create')
 async def microverse_create_handler(query: str, token: str, request: Request):
-    auth_result = auth(token)
-    return create_microverse('text', query, auth_result, text_encoder, text_image_encoder)
+    return create_microverse('text', query, auth(token), text_encoder, text_image_encoder)
 
 
 @app.post('/microverse/create')
 async def microverse_create_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
     query = await query.read()
-    auth_result = auth(token)
-    return create_microverse('image', query, auth_result, text_encoder, text_image_encoder)
+    return create_microverse('image', query, auth(token), text_encoder, text_image_encoder)
 
 
 @app.get('/microverse/remove')
 async def microverse_remove_handler(token: str, microverse: str, request: Request):
-    auth_result = auth(token)
-    return remove_microverse(auth_result, microverse)
+    return remove_microverse(auth(token), microverse)
 
 
 @app.get('/microverse/list')
 async def microverse_list_handler(token: str, request: Request):
-    auth_result = auth(token)
-    return list_microverses(auth_result)
+    return list_microverses(auth(token))
 
 
 @app.get('/custodian/check')
