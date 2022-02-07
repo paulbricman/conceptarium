@@ -8,7 +8,7 @@ def auth(token):
             'custodian': False
         }
 
-    path = Path('records.json')
+    path = Path('..') / 'knowledge' / 'records.json'
 
     if not path.exists():
         records = {
@@ -27,7 +27,7 @@ def auth(token):
                 'custodian': True
             }
         else:
-            microverses_path = Path('microverses.json')
+            microverses_path = Path('..') / 'knowledge' / 'microverses.json'
             if not microverses_path.exists():
                 json.dump([], open(microverses_path, 'w'))
 
