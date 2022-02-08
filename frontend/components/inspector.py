@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit.uploaded_file_manager import UploadedFile
-from . import knowledge
 from datetime import datetime
 import numpy as np
 import time
@@ -8,6 +7,7 @@ import requests
 import json
 from PIL import Image
 import io
+from . import knowledge
 
 
 def get_name():
@@ -29,9 +29,7 @@ def paint():
             elif thought['modality'] == 'image':
                 url = thought['conceptarium_url'] + '/static?token=' + thought['access_token'] + '&filename=' + \
                     thought['content']
-
-                response = requests.get(url)
-                image = Image.open(io.BytesIO(response.content))
+                image = knowledge.fetch_image(url)
                 st.image(image)
 
             st.markdown('**modality**: ' + thought['modality'])

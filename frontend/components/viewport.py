@@ -1,8 +1,4 @@
-import requests
 import streamlit as st
-import numpy as np
-from PIL import Image
-import io
 from . import knowledge
 
 
@@ -25,11 +21,8 @@ def paint(cols):
                 elif e['modality'] == 'image':
                     url = e['conceptarium_url'] + '/static?token=' + e['access_token'] + '&filename=' + \
                         e['content']
-
-                    response = requests.get(url)
-                    content = response.content
-                    content = Image.open(io.BytesIO(content))
-                    st.image(content)
+                    content = knowledge.fetch_image(url)
+                st.image(content)
 
                 if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):
                     st.session_state['navigator_input'] = content

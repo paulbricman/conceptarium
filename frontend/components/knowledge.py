@@ -53,3 +53,10 @@ def load(modality, query):
             thoughts += content['authorized_thoughts']
 
     return thoughts
+
+
+@st.cache()
+def fetch_image(url):
+    response = requests.get(url)
+    image = Image.open(io.BytesIO(response.content))
+    return image
