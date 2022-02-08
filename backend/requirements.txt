@@ -8,3 +8,4 @@ Pillow==9.0.0
 secrets==1.0.2
 slowapi==0.1.5
 python-multipart==0.0.5
+orjson==3.6.6
