@@ -22,7 +22,7 @@ def paint(cols):
                     url = e['conceptarium_url'] + '/static?token=' + e['access_token'] + '&filename=' + \
                         e['content']
                     content = knowledge.fetch_image(url)
-                st.image(content)
+                    st.image(content)
 
                 if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):
                     st.session_state['navigator_input'] = content
