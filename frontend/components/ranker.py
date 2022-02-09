@@ -1,10 +1,6 @@
 import streamlit as st
 
 
-def get_name():
-    return '🏆 ranker'
-
-
 def paint():
     st.session_state['ranker_relatedness'] = st.slider(
         'relatedness', -1., 1., 0.8, 0.01, help='Specify the weight of semantic similarity of thoughts to the query in ranking the search results.')

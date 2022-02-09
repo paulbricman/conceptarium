@@ -37,13 +37,13 @@ cols = st.columns(col_count)
 for component in layout['leftColumn']:
     with cols[0]:
         m = importlib.import_module('components.' + component)
-        with st.expander(m.get_name(), True):
+        with st.expander(component, True):
             m.paint()
 
 for component in layout['rightColumn']:
     with cols[-1]:
         m = importlib.import_module('components.' + component)
-        with st.expander(m.get_name(), True):
+        with st.expander(component, True):
             m.paint()
 
 start_viewport_col = int(len(layout['leftColumn']) > 0)

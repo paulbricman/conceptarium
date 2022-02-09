@@ -10,10 +10,6 @@ import io
 from . import knowledge
 
 
-def get_name():
-    return '🔍 inspector'
-
-
 def paint():
     if st.session_state.get('authorized_thoughts', None) is not None:
         thoughts = st.session_state['authorized_thoughts']
