@@ -19,9 +19,9 @@ def paint(cols):
                     content = e['content']
                     st.success(e['content'])
                 elif e['modality'] == 'image':
-                    url = e['conceptarium_url'] + '/static?token=' + e['access_token'] + '&filename=' + \
+                    url = e['conceptarium_url'] + '/static?filename=' + \
                         e['content']
-                    content = knowledge.fetch_image(url)
+                    content = knowledge.fetch_image(url, e['access_token'])
                     st.image(content)
 
                 if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):

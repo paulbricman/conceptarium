@@ -8,7 +8,6 @@ from PIL import Image
 
 def load(modality, query):
     thoughts = []
-    query_embeddings = None
 
     for microverse in st.session_state.get('microverses', []):
         url = microverse['url']
@@ -16,13 +15,12 @@ def load(modality, query):
 
         if modality == 'text':
             response = requests.get(url, params={
-                'token': microverse['token'],
                 'query': query,
                 'relatedness': st.session_state['ranker_relatedness'],
                 'activation': st.session_state['ranker_activation'],
                 'noise': st.session_state['ranker_noise'],
                 'return_embeddings': False
-            })
+            }, headers={'Authorization': f"Bearer {microverse['token']}"})
         elif modality == 'image':
             if isinstance(query, UploadedFile):
                 query = Image.open(io.BytesIO(query.getvalue()))
@@ -34,13 +32,11 @@ def load(modality, query):
             query = img_io.read()
 
             response = requests.post(url, data={
-                'token': microverse['token'],
                 'relatedness': st.session_state['ranker_relatedness'],
                 'activation': st.session_state['ranker_activation'],
                 'noise': st.session_state['ranker_noise'],
                 'return_embeddings': False
-            }, files={
-                'query': query})
+            }, files={'query': query}, headers={'Authorization': f"Bearer {microverse['token']}"})
 
         content = json.loads(response.content)
         new_thoughts = content['authorized_thoughts']
@@ -55,8 +51,8 @@ def load(modality, query):
     return thoughts
 
 
-@st.cache()
-def fetch_image(url):
-    response = requests.get(url)
+@ st.cache()
+def fetch_image(url, token):
+    response = requests.get(url, headers={'Authorization': f"Bearer {token}"})
     image = Image.open(io.BytesIO(response.content))
     return image

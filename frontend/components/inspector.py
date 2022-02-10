@@ -23,9 +23,9 @@ def paint():
             if thought['modality'] == 'text':
                 st.success(thought['content'])
             elif thought['modality'] == 'image':
-                url = thought['conceptarium_url'] + '/static?token=' + thought['access_token'] + '&filename=' + \
+                url = thought['conceptarium_url'] + '/static?filename=' + \
                     thought['content']
-                image = knowledge.fetch_image(url)
+                image = knowledge.fetch_image(url, thought['access_token'])
                 st.image(image)
 
             st.markdown('**modality**: ' + thought['modality'])
@@ -40,9 +40,8 @@ def paint():
             if thought['auth']['custodian']:
                 if st.button('remove', help='Delete this thought from your conceptarium. Only available for custodians.'):
                     requests.get(thought['conceptarium_url'] + '/remove', params={
-                        'token': thought['access_token'],
                         'filename': thought['filename']
-                    })
+                    }, headers={'Authorization': f"Bearer {thought['access_token']}"})
                     st.info(
                         'The thought has been removed, which should be reflected in future navigator jumps.')
         else:
@@ -58,9 +57,8 @@ def paint():
                 if st.button('save', help='Persist this content as a new thought in your conceptarium. Only available for custodians.'):
                     if st.session_state['navigator_modality'] == 'text':
                         requests.get(custodian_microverse[0]['url'] + '/save', params={
-                            'token': custodian_microverse[0]['token'],
                             'query': st.session_state['navigator_input']
-                        })
+                        }, headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"})
                     elif st.session_state['navigator_modality'] == 'image':
                         query = st.session_state['navigator_input']
                         if isinstance(query, UploadedFile):
@@ -72,18 +70,15 @@ def paint():
                         img_io.seek(0)
                         query = img_io.read()
 
-                        requests.post(custodian_microverse[0]['url'] + '/save', data={
-                            'token': custodian_microverse[0]['token']}, files={
-                            'query': query
-                        })
+                        requests.post(custodian_microverse[0]['url'] + '/save', files={'query': query},
+                                      headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"})
                     st.info(
                         'The thought has been saved, which should be reflected in future navigator jumps.')
                 if st.button('share microverse', help='Grant access to the past and future search results of this query through a microverse token.'):
                     if st.session_state['navigator_modality'] == 'text':
                         response = requests.get(custodian_microverse[0]['url'] + '/microverse/create', params={
-                            'token': custodian_microverse[0]['token'],
                             'query': st.session_state['navigator_input']
-                        })
+                        }, headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"})
                     elif st.session_state['navigator_modality'] == 'image':
                         query = st.session_state['navigator_input']
                         if isinstance(query, UploadedFile):
@@ -95,10 +90,8 @@ def paint():
                         img_io.seek(0)
                         query = img_io.read()
 
-                        response = requests.post(custodian_microverse[0]['url'] + '/microverse/create', data={
-                            'token': custodian_microverse[0]['token']}, files={
-                            'query': query
-                        })
+                        response = requests.post(custodian_microverse[0]['url'] + '/microverse/create', files={'query': query},
+                                                 headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"})
 
                     response = json.loads(response.content)['token']
                     st.info(response)

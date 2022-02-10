@@ -18,9 +18,8 @@ def paint():
 
                     if e['auth']['custodian']:
                         if st.button('create archive'):
-                            archive = requests.get(e['url'] + '/dump', params={
-                                'token': e['token']
-                            }).content
+                            archive = requests.get(e['url'] + '/dump',
+                                                   headers={'Authorization': f"Bearer {e['token']}"}).content
                             st.download_button(
                                 'download archive', data=archive, file_name='knowledge.zip')
 
@@ -44,9 +43,8 @@ def paint():
                 if url[-5:] != ':8000':
                     url += ':8000'
                 custodian_check = json.loads(
-                    requests.get(url + '/custodian/check', params={
-                        'token': token
-                    }).content)
+                    requests.get(url + '/custodian/check',
+                                 headers={'Authorization': f"Bearer {token}"}).content)
 
                 st.session_state['microverses'] = st.session_state.get(
                     'microverses', []) + [{
@@ -61,9 +59,8 @@ def paint():
             custodian_microverse = [
                 e for e in st.session_state.get('microverses', []) if e['auth']['custodian'] == True]
             if len(custodian_microverse) > 0:
-                shared_microverses = json.loads(requests.get(custodian_microverse[0]['url'] + '/microverse/list', params={
-                    'token': custodian_microverse[0]['token']
-                }).content)
+                shared_microverses = json.loads(requests.get(custodian_microverse[0]['url'] + '/microverse/list',
+                                                             headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"}).content)
 
                 for e_idx, e in enumerate(shared_microverses):
                     if isinstance(e, dict):
@@ -73,9 +70,8 @@ def paint():
 
                         if st.button('disable', help='Disable the access to this microverse.'):
                             requests.get(custodian_microverse[0]['url'] + '/microverse/remove', params={
-                                'token': custodian_microverse[0]['token'],
                                 'microverse': e['token']
-                            })
+                            }, headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"})
                             st.info(
                                 'The microverse has been removed.')
                             st.experimental_rerun()

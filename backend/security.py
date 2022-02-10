@@ -3,11 +3,12 @@ import json
 
 
 def auth(token):
-    if token == None:
+    if token == None or not token.startswith('Bearer '):
         return {
             'custodian': False
         }
 
+    token = token.replace('Bearer ', '')
     path = Path('..') / 'knowledge' / 'records.json'
 
     if not path.exists():

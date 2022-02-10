@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Header
 from security import auth
 from util import find, rank, save, get_authorized_thoughts, remove, dump
 from sentence_transformers import SentenceTransformer
@@ -27,13 +27,13 @@ text_encoder = SentenceTransformer(
 @app.get('/find', response_class=ORJSONResponse)
 async def find_text_handler(
     query: str,
-    token: str,
     relatedness: float = 0.8,
     activation: float = 0.,
     noise: float = 0.1,
     return_embeddings: bool = False,
     silent: bool = False,
-    request: Request = None
+    request: Request = None,
+    authorization: str = Header(None)
 ):
     return find(
         'text',
@@ -42,7 +42,7 @@ async def find_text_handler(
         activation,
         noise,
         return_embeddings,
-        auth(token),
+        auth(authorization),
         text_encoder,
         text_image_encoder,
         silent
@@ -52,13 +52,13 @@ async def find_text_handler(
 @app.post('/find', response_class=ORJSONResponse)
 async def find_image_handler(
     query: UploadFile = File(...),
-    token: str = Form(...),
     relatedness: float = Form(0.8),
     activation: float = Form(0.),
     noise: float = Form(0.1),
     return_embeddings: bool = Form(False),
     silent: bool = Form(False),
-    request: Request = None
+    request: Request = None,
+    authorization: str = Header(None)
 ):
     query = await query.read()
     return find(
@@ -68,7 +68,7 @@ async def find_image_handler(
         activation,
         noise,
         return_embeddings,
-        auth(token),
+        auth(authorization),
         text_encoder,
         text_image_encoder,
         silent
@@ -76,59 +76,59 @@ async def find_image_handler(
 
 
 @app.get('/save')
-async def save_text_handler(query: str, token: str, request: Request):
-    return save('text', query, auth(token),
+async def save_text_handler(query: str, request: Request, authorization: str = Header(None)):
+    return save('text', query, auth(authorization),
                 text_encoder, text_image_encoder)
 
 
 @app.post('/save')
-async def save_image_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
+async def save_image_handler(query: UploadFile = File(...), request: Request = None, authorization: str = Header(None)):
     query = await query.read()
-    results = save('image', query, auth(token),
+    results = save('image', query, auth(authorization),
                    text_encoder, text_image_encoder)
     return results
 
 
 @app.get('/remove')
-async def remove_handler(filename: str, token: str, request: Request):
-    return remove(auth(token), filename)
+async def remove_handler(filename: str, request: Request, authorization: str = Header(None)):
+    return remove(auth(authorization), filename)
 
 
 @app.get('/dump')
-async def save_text_handler(token: str, request: Request):
-    return dump(auth(token))
+async def save_text_handler(request: Request, authorization: str = Header(None)):
+    return dump(auth(authorization))
 
 
 @app.get('/static')
 @limiter.limit("200/minute")
-async def static_handler(filename: str, token: str, request: Request):
+async def static_handler(filename: str, request: Request, authorization: str = Header(None)):
     knowledge_base_path = Path('..') / 'knowledge'
-    thoughts = get_authorized_thoughts(auth(token))
+    thoughts = get_authorized_thoughts(auth(authorization))
     if filename in [e['filename'] for e in thoughts]:
         return FileResponse(knowledge_base_path / filename)
 
 
 @app.get('/microverse/create')
-async def microverse_create_handler(query: str, token: str, request: Request):
-    return create_microverse('text', query, auth(token), text_encoder, text_image_encoder)
+async def microverse_create_handler(query: str, request: Request, authorization: str = Header(None)):
+    return create_microverse('text', query, auth(authorization), text_encoder, text_image_encoder)
 
 
 @app.post('/microverse/create')
-async def microverse_create_handler(query: UploadFile = File(...), token: str = Form(...), request: Request = None):
+async def microverse_create_handler(query: UploadFile = File(...), request: Request = None, authorization: str = Header(None)):
     query = await query.read()
-    return create_microverse('image', query, auth(token), text_encoder, text_image_encoder)
+    return create_microverse('image', query, auth(authorization), text_encoder, text_image_encoder)
 
 
 @app.get('/microverse/remove')
-async def microverse_remove_handler(token: str, microverse: str, request: Request):
-    return remove_microverse(auth(token), microverse)
+async def microverse_remove_handler(microverse: str, request: Request, authorization: str = Header(None)):
+    return remove_microverse(auth(authorization), microverse)
 
 
 @app.get('/microverse/list')
-async def microverse_list_handler(token: str, request: Request):
-    return list_microverses(auth(token))
+async def microverse_list_handler(request: Request, authorization: str = Header(None)):
+    return list_microverses(auth(authorization))
 
 
 @app.get('/custodian/check')
-async def check_custodian(token: str, request: Request):
-    return auth(token)
+async def check_custodian(request: Request, authorization: str = Header(None)):
+    return auth(authorization)
