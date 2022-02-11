@@ -6,3 +6,4 @@ requests==2.22.0
 numpy==1.17.4
 streamlit==1.4.0
 Pillow==9.0.0
+extra-streamlit-components==0.1.53
