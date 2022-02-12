@@ -12,23 +12,7 @@ st.set_page_config(
 microverses.paint()
 header.paint()
 
-params = st.experimental_get_query_params()
-layout = params.get('layout')
-
-if not layout:
-    layout = {
-        'leftColumn': ['navigator', 'ranker'],
-        'rightColumn': ['inspector'],
-        'viewportCols': 3
-    }
-else:
-    layout = json.loads(params['layout'][0])
-    if 'viewportCols' not in layout.keys():
-        layout['viewportCols'] = 3
-    if 'leftColumn' not in layout.keys():
-        layout['leftColumn'] = ['navigator', 'ranker']
-    if 'rightColumn' not in layout.keys():
-        layout['rightColumn'] = ['inspector']
+layout = st.session_state['layout']
 
 col_count = layout['viewportCols'] + \
     int(len(layout['leftColumn']) > 0) + int(len(layout['rightColumn']) > 0)

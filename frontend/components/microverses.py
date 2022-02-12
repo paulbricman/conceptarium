@@ -4,14 +4,30 @@ import requests
 import json
 import extra_streamlit_components as stx
 from time import sleep
+import os
 
 
 def paint():
     cookie_manager = get_manager()
     microverses = get_microverses()
     st.session_state['microverses'] = microverses
+    layout = get_layout()
+    st.session_state['layout'] = layout
 
     with st.sidebar:
+        with st.expander('🗔 layout', expanded=True):
+            layout['viewportCols'] = int(st.number_input(
+                'viewport cols', 1, 5, layout.get('viewportCols', 3), 1))
+
+            faux_components = ['header', 'knowledge',
+                               'microverses', 'viewport']
+            components = [e.split('.')[0] for e in os.listdir('components') if e.endswith(
+                '.py') and e.split('.')[0] not in faux_components]
+            layout['leftColumn'] = st.multiselect(
+                'left column', components, layout.get('leftColumn', ['navigator', 'ranker']))
+            layout['rightColumn'] = st.multiselect(
+                'right column', components, layout.get('rightColumn', ['inspector']))
+
         if len(microverses) > 0:
             with st.expander('🔌 connected microverses', expanded=True):
                 if len(microverses) > 0:
@@ -97,8 +113,23 @@ def get_manager():
 
 def get_microverses():
     cookie_manager = get_manager()
-    microverses = cookie_manager.get_all().get('microverses')
+    microverses = cookie_manager.get_all(
+        'microverses_cookie').get('microverses')
     if not microverses:
         microverses = []
 
     return microverses
+
+
+def get_layout():
+    cookie_manager = get_manager()
+    layout = cookie_manager.get_all(
+        'layout_cookie').get('layout')
+    if not layout:
+        layout = {
+            'leftColumn': ['navigator', 'ranker'],
+            'rightColumn': ['inspector'],
+            'viewportCols': 3
+        }
+
+    return layout
