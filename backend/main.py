@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Request, Header
+from fastapi import Depends, FastAPI, Request, Header
 from security import auth
 from util import find, rank, save, get_authorized_thoughts, remove, dump
 from sentence_transformers import SentenceTransformer
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
 from fastapi.responses import FileResponse, ORJSONResponse
+from fastapi.security import HTTPBearer, HTTPBasicCredentials
 from pathlib import Path
 from microverses import create_microverse, remove_microverse, list_microverses
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -13,6 +14,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi.errors import RateLimitExceeded
 
 
+security = HTTPBearer()
 limiter = Limiter(key_func=get_remote_address, default_limits=['30/minute'])
 app = FastAPI()
 app.state.limiter = limiter
@@ -33,7 +35,7 @@ async def find_text_handler(
     return_embeddings: bool = False,
     silent: bool = False,
     request: Request = None,
-    authorization: str = Header(None)
+    authorization: HTTPBasicCredentials = Depends(security)
 ):
     return find(
         'text',
@@ -42,7 +44,7 @@ async def find_text_handler(
         activation,
         noise,
         return_embeddings,
-        auth(authorization),
+        auth(authorization.credentials),
         text_encoder,
         text_image_encoder,
         silent
@@ -58,7 +60,7 @@ async def find_image_handler(
     return_embeddings: bool = Form(False),
     silent: bool = Form(False),
     request: Request = None,
-    authorization: str = Header(None)
+    authorization: HTTPBasicCredentials = Depends(security)
 ):
     query = await query.read()
     return find(
@@ -68,7 +70,7 @@ async def find_image_handler(
         activation,
         noise,
         return_embeddings,
-        auth(authorization),
+        auth(authorization.credentials),
         text_encoder,
         text_image_encoder,
         silent
@@ -76,59 +78,59 @@ async def find_image_handler(
 
 
 @app.get('/save')
-async def save_text_handler(query: str, request: Request, authorization: str = Header(None)):
-    return save('text', query, auth(authorization),
+async def save_text_handler(query: str, request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return save('text', query, auth(authorization.credentials),
                 text_encoder, text_image_encoder)
 
 
 @app.post('/save')
-async def save_image_handler(query: UploadFile = File(...), request: Request = None, authorization: str = Header(None)):
+async def save_image_handler(query: UploadFile = File(...), request: Request = None, authorization: HTTPBasicCredentials = Depends(security)):
     query = await query.read()
-    results = save('image', query, auth(authorization),
+    results = save('image', query, auth(authorization.credentials),
                    text_encoder, text_image_encoder)
     return results
 
 
 @app.get('/remove')
-async def remove_handler(filename: str, request: Request, authorization: str = Header(None)):
-    return remove(auth(authorization), filename)
+async def remove_handler(filename: str, request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return remove(auth(authorization.credentials), filename)
 
 
 @app.get('/dump')
-async def save_text_handler(request: Request, authorization: str = Header(None)):
-    return dump(auth(authorization))
+async def save_text_handler(request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return dump(auth(authorization.credentials))
 
 
 @app.get('/static')
 @limiter.limit("200/minute")
-async def static_handler(filename: str, request: Request, authorization: str = Header(None)):
+async def static_handler(filename: str, request: Request, authorization: HTTPBasicCredentials = Depends(security)):
     knowledge_base_path = Path('..') / 'knowledge'
-    thoughts = get_authorized_thoughts(auth(authorization))
+    thoughts = get_authorized_thoughts(auth(authorization.credentials))
     if filename in [e['filename'] for e in thoughts]:
         return FileResponse(knowledge_base_path / filename)
 
 
 @app.get('/microverse/create')
-async def microverse_create_handler(query: str, request: Request, authorization: str = Header(None)):
-    return create_microverse('text', query, auth(authorization), text_encoder, text_image_encoder)
+async def microverse_create_handler(query: str, request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return create_microverse('text', query, auth(authorization.credentials), text_encoder, text_image_encoder)
 
 
 @app.post('/microverse/create')
-async def microverse_create_handler(query: UploadFile = File(...), request: Request = None, authorization: str = Header(None)):
+async def microverse_create_handler(query: UploadFile = File(...), request: Request = None, authorization: HTTPBasicCredentials = Depends(security)):
     query = await query.read()
-    return create_microverse('image', query, auth(authorization), text_encoder, text_image_encoder)
+    return create_microverse('image', query, auth(authorization.credentials), text_encoder, text_image_encoder)
 
 
 @app.get('/microverse/remove')
-async def microverse_remove_handler(microverse: str, request: Request, authorization: str = Header(None)):
-    return remove_microverse(auth(authorization), microverse)
+async def microverse_remove_handler(microverse: str, request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return remove_microverse(auth(authorization.credentials), microverse)
 
 
 @app.get('/microverse/list')
-async def microverse_list_handler(request: Request, authorization: str = Header(None)):
-    return list_microverses(auth(authorization))
+async def microverse_list_handler(request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return list_microverses(auth(authorization.credentials))
 
 
 @app.get('/custodian/check')
-async def check_custodian(request: Request, authorization: str = Header(None)):
-    return auth(authorization)
+async def check_custodian(request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return auth(authorization.credentials)
