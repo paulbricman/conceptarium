@@ -27,6 +27,7 @@ def paint(cols):
                 if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):
                     st.session_state['navigator_input'] = content
                     st.session_state['navigator_modality'] = e['modality']
+                    st.session_state['navigator_thought'] = e
                     st.session_state['authorized_thoughts'] = knowledge.load(
                         e['modality'], content)
                     st.experimental_rerun()

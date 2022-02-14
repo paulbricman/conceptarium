@@ -11,14 +11,9 @@ from . import knowledge
 
 
 def paint():
-    if st.session_state.get('authorized_thoughts', None) is not None:
-        thoughts = st.session_state['authorized_thoughts']
-
-        match = [
-            e for e in thoughts if st.session_state['navigator_input'] == e['content']]
-
-        if len(match) > 0:
-            thought = match[0]
+    if st.session_state.get('authorized_thoughts') is not None:
+        thought = st.session_state.get('navigator_thought')
+        if thought:
             st.markdown('**type**: past entry')
             if thought['modality'] == 'text':
                 st.success(thought['content'])

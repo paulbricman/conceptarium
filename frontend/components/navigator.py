@@ -18,3 +18,4 @@ def paint():
             modality, input)
         st.session_state['navigator_modality'] = modality
         st.session_state['navigator_input'] = input
+        st.session_state['navigator_thought'] = None
