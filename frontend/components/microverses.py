@@ -5,6 +5,7 @@ import json
 import extra_streamlit_components as stx
 from time import sleep
 import os
+from pathlib import Path
 
 
 def paint():
@@ -21,7 +22,12 @@ def paint():
 
             faux_components = ['header', 'knowledge',
                                'microverses', 'viewport']
-            components = [e.split('.')[0] for e in os.listdir('components') if e.endswith(
+
+            components_path = Path('components')
+            if not components_path.exists():
+                components_path = Path('frontend') / 'components'
+
+            components = [e.split('.')[0] for e in os.listdir(components_path) if e.endswith(
                 '.py') and e.split('.')[0] not in faux_components]
             layout['leftColumn'] = st.multiselect(
                 'left column', components, layout.get('leftColumn', ['navigator', 'ranker']))
