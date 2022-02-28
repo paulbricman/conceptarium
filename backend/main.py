@@ -1,6 +1,6 @@
-from fastapi import Depends, FastAPI, Request, Header
+from fastapi import Depends, FastAPI, Request, Response
 from security import auth
-from util import find, rank, save, get_authorized_thoughts, remove, dump
+from util import find, rank, save, get_authorized_thoughts, remove, dump, compile_rss
 from sentence_transformers import SentenceTransformer
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
@@ -75,6 +75,26 @@ async def find_image_handler(
         text_image_encoder,
         silent
     )
+
+
+@app.get('/rss')
+async def rss_handler(
+    authorization: str,
+    request: Request = None
+):
+    items = find(
+        'text',
+        '',
+        0,
+        0,
+        0,
+        False,
+        auth(authorization),
+        text_encoder,
+        text_image_encoder,
+        False
+    )
+    return Response(content=compile_rss(items), media_type="application/xml")
 
 
 @app.get('/save')

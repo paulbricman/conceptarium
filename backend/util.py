@@ -4,12 +4,15 @@ from PIL import Image
 import io
 import secrets
 import time
+from isodate import UTC
 import numpy as np
 from numpy.linalg import norm
 import os
 import time
 import shutil
 from fastapi.responses import FileResponse
+from feedgen.feed import FeedGenerator
+import datetime
 
 
 def find(modality, query, relatedness, activation, noise, return_embeddings, auth_result, text_encoder, text_image_encoder, silent=False):
@@ -257,3 +260,22 @@ def dump(auth_result):
     else:
         shutil.make_archive(knowledge_base_path, 'zip', knowledge_base_path)
         return FileResponse(archive_path, filename='knowledge.zip')
+
+
+def compile_rss(items):
+    fg = FeedGenerator()
+    fg.title('microverse')
+    fg.description(
+        'This microverse of knowledge contains a cluster of ideas centered around a certain topic.')
+    fg.link(href='https://paulbricman.com/thoughtware/conceptarium')
+
+    for item in items['authorized_thoughts']:
+        if item['modality'] == 'text':
+            fe = fg.add_entry()
+            fe.title(item['filename'])
+            fe.content(item['content'])
+            published = datetime.datetime.fromtimestamp(item['timestamp'])
+            published = published.astimezone(datetime.timezone.utc)
+            fe.published(published)
+
+    return fg.rss_str(pretty=True)
