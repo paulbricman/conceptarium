@@ -4,7 +4,6 @@ from PIL import Image
 import io
 import secrets
 import time
-from isodate import UTC
 import numpy as np
 from numpy.linalg import norm
 import os
