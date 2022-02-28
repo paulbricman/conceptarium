@@ -71,8 +71,6 @@ def paint():
                     url = 'http://' + url
                 if url[-1] == '/':
                     url = url[:-1]
-                if url[-5:] != ':8000':
-                    url += ':8000'
 
                 custodian_check = json.loads(
                     requests.get(url + '/custodian/check',
