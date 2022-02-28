@@ -153,4 +153,4 @@ async def microverse_list_handler(request: Request, authorization: HTTPBasicCred
 
 @app.get('/custodian/check')
 async def check_custodian(request: Request, authorization: HTTPBasicCredentials = Depends(security)):
-    return auth(authorization.credentials)
+    return auth(authorization.credentials, True)

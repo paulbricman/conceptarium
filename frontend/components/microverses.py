@@ -84,7 +84,7 @@ def paint():
                 cookie_manager.set(
                     'microverses', microverses, expires_at=datetime.datetime.now() + datetime.timedelta(days=30))
                 st.session_state['microverses'] = microverses
-                sleep(0.4)
+                sleep(0.5)
 
                 st.experimental_rerun()
 

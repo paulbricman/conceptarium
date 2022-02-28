@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 
 
-def auth(token):
+def auth(token, compact=False):
     if not token:
         return {
             'custodian': False
@@ -34,6 +34,10 @@ def auth(token):
             microverses = json.load(open(microverses_path))
             authorized_microverse = [
                 e for e in microverses if e['token'] == token]
+
+            if compact:
+                if len(authorized_microverse) > 0:
+                    authorized_microverse[0].pop('embeddings')
 
             return {
                 'custodian': False,
