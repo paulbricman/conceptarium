@@ -38,7 +38,7 @@ docker-compose stop
 # update with:
 docker-compose stop
 docker-compose rm -f
-docker-compose pull   
+docker-compose pull
 docker-compose up -d
 ```
 
@@ -66,4 +66,4 @@ Missing dependencies? Please have a look at `frontend/Dockerfile` and `backend/D
 
 The web app should then be available at `localhost:8501`, while the API at `localhost:8000` (with docs at `localhost:8000/docs`). The backend component takes a few minutes to get the ML models at first.
 
-To access your local instance, enter the conceptarium URL (i.e. `localhost` if you ran from source, `backend.docker` if you used docker), and your desired token. Remember your token, as you'll have to use it to authenticate in future sessions.
+To access your local instance, enter the conceptarium URL (i.e. `localhost:8000` if you ran from source, `backend.docker:8000` if you used docker), and your desired token. Remember your token, as you'll have to use it to authenticate in future sessions.
