@@ -1,13 +1,15 @@
-from fastapi import Depends, FastAPI, Request, Response
 from security import auth
 from util import find, rank, save, get_authorized_thoughts, remove, dump, compile_rss
+from bibliography import set_ical
+from microverses import create_microverse, remove_microverse, list_microverses
+
 from sentence_transformers import SentenceTransformer
+from fastapi import Depends, FastAPI, Request, Response
 from fastapi.datastructures import UploadFile
 from fastapi import FastAPI, File, Form
 from fastapi.responses import FileResponse, ORJSONResponse
 from fastapi.security import HTTPBearer, HTTPBasicCredentials
 from pathlib import Path
-from microverses import create_microverse, remove_microverse, list_microverses
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
@@ -154,3 +156,8 @@ async def microverse_list_handler(request: Request, authorization: HTTPBasicCred
 @app.get('/custodian/check')
 async def check_custodian(request: Request, authorization: HTTPBasicCredentials = Depends(security)):
     return auth(authorization.credentials, True)
+
+
+@app.get('/bibliography/set')
+async def set_bibliography_ical(ical_url: str, request: Request, authorization: HTTPBasicCredentials = Depends(security)):
+    return set_ical(ical_url, auth(authorization.credentials))
