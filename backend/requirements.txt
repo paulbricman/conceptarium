@@ -10,3 +10,4 @@ slowapi==0.1.5
 python-multipart==0.0.5
 orjson==3.6.6
 feedgen==0.9.0
+ics==0.7
