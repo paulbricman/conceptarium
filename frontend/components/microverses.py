@@ -6,13 +6,26 @@ import extra_streamlit_components as stx
 from time import sleep
 import os
 from pathlib import Path
+import random
 
 
 def paint():
     cookie_manager = get_manager()
+
     microverses = get_microverses()
     st.session_state['microverses'] = microverses
-    layout = get_layout()
+
+    layout = get_layout(True)
+    if not layout:
+        sleep(0.5)
+        layout = get_layout(False)
+        if not layout:
+            layout = {
+                'viewportCols': 3,
+                'leftColumn': ['navigator', 'ranker'],
+                'rightColumn': ['inspector']
+            }
+
     st.session_state['layout'] = layout
 
     with st.sidebar:
@@ -33,6 +46,9 @@ def paint():
                 'left column', components, layout.get('leftColumn', ['navigator', 'ranker']))
             layout['rightColumn'] = st.multiselect(
                 'right column', components, layout.get('rightColumn', ['inspector']))
+            st.session_state['layout'] = layout
+            cookie_manager.set('layout', layout, expires_at=datetime.datetime.now(
+            ) + datetime.timedelta(days=30))
 
         if len(microverses) > 0:
             with st.expander('🔌 connected microverses', expanded=True):
@@ -125,15 +141,9 @@ def get_microverses():
     return microverses
 
 
-def get_layout():
+def get_layout(initial):
     cookie_manager = get_manager()
     layout = cookie_manager.get_all(
-        'layout_cookie').get('layout')
-    if not layout:
-        layout = {
-            'leftColumn': ['navigator', 'ranker'],
-            'rightColumn': ['inspector'],
-            'viewportCols': 3
-        }
+        'layout_cookie' + str(initial)).get('layout')
 
     return layout
