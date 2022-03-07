@@ -20,7 +20,13 @@ def set_ical(ical_url, auth):
     }
 
 
-def get_ical_events(ical_url):
+def get_ical_events():
+    records_path = Path('..') / 'knowledge' / 'records.json'
+    ical_url = json.load(open(records_path)).get('bibliography_ical')
+
+    if not ical_url:
+        return []
+
     cal = Calendar(requests.get(ical_url).text)
     events = list(cal.events)
     for e_idx, e in enumerate(events):
@@ -28,5 +34,6 @@ def get_ical_events(ical_url):
         event_dict['name'] = e.name.replace('"', '')
         event_dict['timestamp'] = (e.begin.timestamp + e.end.timestamp) // 2
         events[e_idx] = event_dict
+
     events = sorted(events, key=lambda x: x['timestamp'])
     return events

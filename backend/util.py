@@ -12,6 +12,7 @@ import shutil
 from fastapi.responses import FileResponse
 from feedgen.feed import FeedGenerator
 import datetime
+from bibliography import get_ical_events
 
 
 def find(modality, query, relatedness, activation, noise, return_embeddings, auth_result, text_encoder, text_image_encoder, silent=False):
@@ -47,12 +48,17 @@ def find(modality, query, relatedness, activation, noise, return_embeddings, aut
         open(knowledge_base_path / 'metadata.json',
              'w').write(json.dumps(authorized_thoughts))
 
+    events = get_ical_events()
+
     for e_idx, e in enumerate(sims):
         authorized_thoughts[e_idx]['relatedness'] = float(e)
         authorized_thoughts[e_idx]['interest'] = float(
             authorized_thoughts[e_idx]['interest'])
         authorized_thoughts[e_idx]['content'] = get_content(
             authorized_thoughts[e_idx], True)
+        authorized_thoughts[e_idx]['events'] = [
+            f for f in events if abs(f['timestamp'] - authorized_thoughts[e_idx]['timestamp']) < 60 * 60]
+
         if not return_embeddings:
             if 'embeddings' in authorized_thoughts[e_idx]:
                 authorized_thoughts[e_idx].pop('embeddings')
