@@ -24,7 +24,7 @@ def paint(cols):
                     content = knowledge.fetch_image(url, e['access_token'])
                     st.image(content)
 
-                for event in e['events']:
+                for event in e.get('events', []):
                     st.markdown('- ' + event['name'])
 
                 if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):

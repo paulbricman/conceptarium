@@ -6,9 +6,9 @@ def paint():
         thought = st.session_state.get('navigator_thought')
 
         if thought:
-            events = [thought['events']]
+            events = [thought.get('events', [])]
         else:
-            events = [e['events']
+            events = [e.get('events', [])
                       for e in st.session_state['authorized_thoughts'] if e['relatedness'] > 0.5]
 
         events = [f for e in events for f in e]
