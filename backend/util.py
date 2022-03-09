@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from tkinter import E
 from PIL import Image
 import io
 import secrets
@@ -77,11 +78,15 @@ def find(modality, query, relatedness, activation, noise, return_embeddings, aut
 
 
 def rank(authorized_thoughts, relatedness, activation, noise):
-    return sorted(authorized_thoughts, reverse=True, key=lambda x:
-                  (relatedness * x['relatedness'] +
-                   activation * (np.log(x['interest'] / (1 - 0.9)) - 0.9 * np.log(
-                       (time.time() - x['timestamp']) / (3600 * 24) + 0.1))) *
-                  np.random.normal(1, noise))
+    for e_idx, e in enumerate(authorized_thoughts):
+        authorized_thoughts[e_idx]['score'] = float(relatedness * e['relatedness'] +
+                                                    activation * (np.log(max(1, e['interest'] / (1 - 0.9))) -
+                                                                  0.9 * np.log(max(1, (time.time() - e['timestamp']) / (3600 * 24)))) * np.random.normal(1, noise))
+
+    authorized_thoughts = sorted(
+        authorized_thoughts, reverse=True, key=lambda x: x['score'])
+
+    return authorized_thoughts
 
 
 def save(modality, query, auth_result, text_encoder, text_image_encoder, silent=False):

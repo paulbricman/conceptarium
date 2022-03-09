@@ -24,6 +24,9 @@ def paint(cols):
                     content = knowledge.fetch_image(url, e['access_token'])
                     st.image(content)
 
+                for event in e['events']:
+                    st.markdown('- ' + event['name'])
+
                 if st.button('jump (' + str(round(e['relatedness'], 2)) + ')', e['content'], help='Use this as the basis of a new search query.'):
                     st.session_state['navigator_input'] = content
                     st.session_state['navigator_modality'] = e['modality']
