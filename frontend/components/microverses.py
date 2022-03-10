@@ -71,7 +71,7 @@ def paint():
                             microverses.remove(e)
                             cookie_manager.delete('microverses')
                             cookie_manager.set(
-                                'microverses', microverses, expires_at=datetime.datetime.now() + datetime.timedelta(days=30))
+                                'microverses', microverses, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='remove')
                             st.session_state['microverses'] = microverses
                             sleep(0.5)
                             st.experimental_rerun()
@@ -98,7 +98,7 @@ def paint():
                         'auth': custodian_check
                     }]
                 cookie_manager.set(
-                    'microverses', microverses, expires_at=datetime.datetime.now() + datetime.timedelta(days=30))
+                    'microverses', microverses, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='add')
                 st.session_state['microverses'] = microverses
                 sleep(0.5)
 
