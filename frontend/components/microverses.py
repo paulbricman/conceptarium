@@ -10,28 +10,24 @@ import random
 
 
 def paint():
-    cookie_manager = get_manager()
+    cookie_manager = get_cookie_manager()
+    user_state = cookie_manager.get('user_state')
 
-    microverses = get_microverses()
-    st.session_state['microverses'] = microverses
+    if not user_state:
+        sleep(1.)
+        user_state = cookie_manager.get('user_state')
+        if not user_state:
+            user_state = {}
 
-    layout = get_layout(True)
-    if not layout:
-        sleep(0.5)
-        layout = get_layout(False)
-        if not layout:
-            layout = {
-                'viewportCols': 3,
-                'leftColumn': ['navigator', 'ranker'],
-                'rightColumn': ['inspector']
-            }
-
-    st.session_state['layout'] = layout
+    user_state['layout'] = user_state.get('layout', default_layout())
+    user_state['microverses'] = user_state.get('microverses', [])
+    st.session_state['microverses'] = user_state['microverses']
+    st.session_state['layout'] = user_state['layout']
 
     with st.sidebar:
         with st.expander('🗔 layout', expanded=True):
-            layout['viewportCols'] = int(st.number_input(
-                'viewport cols', 1, 5, layout.get('viewportCols', 3), 1))
+            user_state['layout']['viewportCols'] = int(st.number_input(
+                'viewport cols', 1, 5, user_state['layout'].get('viewportCols', 3), 1))
 
             faux_components = ['header', 'knowledge',
                                'microverses', 'viewport']
@@ -42,45 +38,42 @@ def paint():
 
             components = [e.split('.')[0] for e in os.listdir(components_path) if e.endswith(
                 '.py') and e.split('.')[0] not in faux_components]
-            layout['leftColumn'] = st.multiselect(
-                'left column', components, layout.get('leftColumn', ['navigator', 'ranker']))
-            layout['rightColumn'] = st.multiselect(
-                'right column', components, layout.get('rightColumn', ['inspector']))
-            st.session_state['layout'] = layout
-            cookie_manager.set('layout', layout, expires_at=datetime.datetime.now(
+            user_state['layout']['leftColumn'] = st.multiselect(
+                'left column', components, user_state['layout'].get('leftColumn', ['navigator', 'ranker']))
+            user_state['layout']['rightColumn'] = st.multiselect(
+                'right column', components, user_state['layout'].get('rightColumn', ['inspector']))
+            st.session_state['layout'] = user_state['layout']
+            cookie_manager.set('user_state', user_state, expires_at=datetime.datetime.now(
             ) + datetime.timedelta(days=30))
 
-        if len(microverses) > 0:
+        if len(user_state['microverses']) > 0:
             with st.expander('🔌 connected microverses', expanded=True):
-                if len(microverses) > 0:
-                    for e_idx, e in enumerate(microverses):
-                        if e['auth']['custodian']:
-                            display_text = '🗝️ ' + e['url']
-                        else:
-                            display_text = e['url']
-                        st.code(display_text)
+                for e_idx, e in enumerate(user_state['microverses']):
+                    if e['auth']['custodian']:
+                        display_text = '🗝️ ' + e['url']
+                    else:
+                        display_text = e['url']
+                    st.code(display_text)
 
-                        if e['auth']['custodian']:
-                            if st.button('create archive'):
-                                archive = requests.get(e['url'] + '/dump',
-                                                       headers={'Authorization': f"Bearer {e['token']}"}).content
-                                st.download_button(
-                                    'download archive', data=archive, file_name='knowledge.zip')
+                    if e['auth']['custodian']:
+                        if st.button('create archive'):
+                            archive = requests.get(e['url'] + '/dump',
+                                                   headers={'Authorization': f"Bearer {e['token']}"}).content
+                            st.download_button(
+                                'download archive', data=archive, file_name='knowledge.zip')
 
-                        if st.button('remove', key=(e, e_idx), help='Remove this source of thoughts.'):
-                            microverses.remove(e)
-                            cookie_manager.delete('microverses')
-                            cookie_manager.set(
-                                'microverses', microverses, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='remove')
-                            st.session_state['microverses'] = microverses
-                            sleep(0.5)
-                            st.experimental_rerun()
+                    if st.button('remove', key=(e, e_idx), help='Remove this source of thoughts.'):
+                        user_state['microverses'].remove(e)
+                        cookie_manager.delete('user_state')
+                        cookie_manager.set(
+                            'user_state', user_state, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='remove')
+                        sleep(0.5)
 
         with st.expander('🆕 connect to new microverse', expanded=True):
             url = st.text_input('conceptarium url',
-                                key=microverses, help='Specify the base URL of the conceptarium you wish to access thoughts from. If you\'re trying to connect to your local instance, enter `localhost`.')
+                                key=user_state['microverses'], help='Specify the base URL of the conceptarium you wish to access thoughts from. If you\'re trying to connect to your local instance, enter `localhost`.')
             token = st.text_input(
-                'access token', key=microverses, help='Specify the token to be used in authorizing access to this conceptarium. If you\'re the custodian of this conceptarium, enter your custodian token. If this is someone else\'s instance, please use the microverse token they provided you with.', type='password')
+                'access token', key=user_state['microverses'], help='Specify the token to be used in authorizing access to this conceptarium. If you\'re the custodian of this conceptarium, enter your custodian token. If this is someone else\'s instance, please use the microverse token they provided you with.', type='password')
 
             if st.button('add', help='Add this conceptarium as a source of thoughts to be explored.'):
                 if '://' not in url:
@@ -91,21 +84,19 @@ def paint():
                 custodian_check = json.loads(
                     requests.get(url + '/custodian/check',
                                  headers={'Authorization': f"Bearer {token}"}).content)
-                if len([e for e in microverses if e['url'] == url]) == 0:
-                    microverses += [{
+                if len([e for e in user_state['microverses'] if e['url'] == url]) == 0:
+                    user_state['microverses'] += [{
                         'url': url,
                         'token': token,
                         'auth': custodian_check
                     }]
                 cookie_manager.set(
-                    'microverses', microverses, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='add')
-                st.session_state['microverses'] = microverses
+                    'user_state', user_state, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='add')
                 sleep(0.5)
-
-                st.experimental_rerun()
+                st.session_state['microverses'] = user_state['microverses']
 
         custodian_microverse = [
-            e for e in microverses if e['auth']['custodian'] == True]
+            e for e in user_state['microverses'] if e['auth']['custodian'] == True]
         if len(custodian_microverse) > 0:
             shared_microverses = json.loads(requests.get(custodian_microverse[0]['url'] + '/microverse/list',
                                                          headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"}).content)
@@ -126,24 +117,14 @@ def paint():
                                 st.experimental_rerun()
 
 
+def default_layout():
+    return {
+        'viewportCols': 3,
+        'leftColumn': ['navigator', 'ranker'],
+        'rightColumn': ['inspector']
+    }
+
+
 @st.cache(allow_output_mutation=True)
-def get_manager():
+def get_cookie_manager():
     return stx.CookieManager()
-
-
-def get_microverses():
-    cookie_manager = get_manager()
-    microverses = cookie_manager.get_all(
-        'microverses_cookie').get('microverses')
-    if not microverses:
-        microverses = []
-
-    return microverses
-
-
-def get_layout(initial):
-    cookie_manager = get_manager()
-    layout = cookie_manager.get_all(
-        'layout_cookie' + str(initial)).get('layout')
-
-    return layout
