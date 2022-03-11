@@ -25,7 +25,7 @@ def paint():
     st.session_state['layout'] = user_state['layout']
 
     with st.sidebar:
-        with st.expander('🗔 layout', expanded=True):
+        with st.expander('💻 layout', expanded=True):
             user_state['layout']['viewportCols'] = int(st.number_input(
                 'viewport cols', 1, 5, user_state['layout'].get('viewportCols', 3), 1))
 
