@@ -30,10 +30,8 @@ def paint():
         min_one_paper = False
         for e in events:
             if 'doi' in e.keys() or 'arxiv_id' in e.keys():
-                st.markdown('- ' + e['name'] + ' ☑️')
                 min_one_paper = True
-            else:
-                st.markdown('- ' + e['name'])
+            st.markdown('- ' + e['name'])
 
         if min_one_paper:
             st.markdown('')
