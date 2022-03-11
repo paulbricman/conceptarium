@@ -4,3 +4,5 @@ knowledge/*
 backend/records.json
 backend/microverses.json
 *.zip
+frontend/__pycache__/*
+frontend/components/__pycache__/*
