@@ -16,9 +16,9 @@ def load(modality, query):
         if modality == 'text':
             response = requests.get(url, params={
                 'query': query,
-                'relatedness': st.session_state['ranker_relatedness'],
-                'activation': st.session_state['ranker_activation'],
-                'noise': st.session_state['ranker_noise'],
+                'relatedness': st.session_state.get('ranker_relatedness', 0.8),
+                'activation': st.session_state.get('ranker_activation', 0.),
+                'noise': st.session_state.get('ranker_noise', 0.01),
                 'return_embeddings': False
             }, headers={'Authorization': f"Bearer {microverse['token']}"})
         elif modality == 'image':
@@ -32,9 +32,9 @@ def load(modality, query):
             query = img_io.read()
 
             response = requests.post(url, data={
-                'relatedness': st.session_state['ranker_relatedness'],
-                'activation': st.session_state['ranker_activation'],
-                'noise': st.session_state['ranker_noise'],
+                'relatedness': st.session_state.get('ranker_relatedness', 0.8),
+                'activation': st.session_state.get('ranker_activation', 0.),
+                'noise': st.session_state.get('ranker_noise', 0.01),
                 'return_embeddings': False
             }, files={'query': query}, headers={'Authorization': f"Bearer {microverse['token']}"})
 
