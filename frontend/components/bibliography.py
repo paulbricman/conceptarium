@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+from arxiv2bib import Cli
 
 
 def paint():
@@ -17,21 +18,36 @@ def paint():
 
         for e_idx, e in enumerate(events):
             if 'doi' in e['name']:
-                events[e_idx]['bibtex'] = doi_to_bibtex(e['name'])
+                events[e_idx]['doi'] = e['name']
+            if 'arxiv' in e['name']:
+                if 'abs' in e['name']:
+                    events[e_idx]['arxiv_id'] = e['name'].split(
+                        'abs')[-1].replace('/', '')
+                elif 'pdf' in e['name']:
+                    events[e_idx]['arxiv_id'] = e['name'].split(
+                        '/pdf/')[-1].replace('/', '').replace('.pdf', '')
 
-        compiled_bibtex = ''
+        min_one_paper = False
         for e in events:
-            if 'bibtex' in e.keys() and e['bibtex']:
-                compiled_bibtex += e['bibtex'] + '\n\n'
+            if 'doi' in e.keys() or 'arxiv_id' in e.keys():
                 st.markdown('- ' + e['name'] + ' ☑️')
+                min_one_paper = True
             else:
                 st.markdown('- ' + e['name'])
 
-        if compiled_bibtex != '':
+        if min_one_paper:
             st.markdown('')
             if st.button('show bibtex'):
-                st.code(compiled_bibtex.strip())
-        else:
+                compiled_bibtex = ''
+                for e in events:
+                    if 'doi' in e.keys():
+                        compiled_bibtex += doi_to_bibtex(e['doi']) + '\n\n'
+                    elif 'arxiv_id' in e.keys():
+                        compiled_bibtex += arxiv_to_bibtex(
+                            e['arxiv_id']) + '\n\n'
+
+                st.code(compiled_bibtex)
+        elif events != []:
             st.markdown('')
 
 
@@ -41,3 +57,9 @@ def doi_to_bibtex(doi):
     })
     if response.status_code == 200:
         return response.content.decode('utf-8')
+
+
+def arxiv_to_bibtex(arxiv_id):
+    cli = Cli([arxiv_id])
+    cli.run()
+    return cli.output[0]
