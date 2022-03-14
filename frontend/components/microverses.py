@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 def paint():
-    sleep(0.1)
+    sleep(0.15)
     cookie_manager = stx.CookieManager()
     user_state = cookie_manager.get('user_state')
 
