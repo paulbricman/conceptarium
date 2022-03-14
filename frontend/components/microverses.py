@@ -14,10 +14,11 @@ def paint():
     user_state = cookie_manager.get('user_state')
 
     if not user_state:
-        sleep(1.)
-        user_state = cookie_manager.get('user_state')
-        if not user_state:
-            user_state = {}
+        with st.spinner('retrieving user data...'):
+            sleep(2.)
+            user_state = cookie_manager.get('user_state')
+            if not user_state:
+                user_state = {}
 
     user_state['layout'] = user_state.get('layout', default_layout())
     user_state['microverses'] = user_state.get('microverses', [])
@@ -125,6 +126,5 @@ def default_layout():
     }
 
 
-@st.cache(allow_output_mutation=True)
 def get_cookie_manager():
     return stx.CookieManager()
