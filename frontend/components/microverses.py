@@ -6,11 +6,11 @@ import extra_streamlit_components as stx
 from time import sleep
 import os
 from pathlib import Path
-import random
 
 
 def paint():
-    cookie_manager = get_cookie_manager()
+    sleep(0.1)
+    cookie_manager = stx.CookieManager()
     user_state = cookie_manager.get('user_state')
 
     if not user_state:
@@ -68,7 +68,6 @@ def paint():
                         cookie_manager.delete('user_state')
                         cookie_manager.set(
                             'user_state', user_state, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='remove')
-                        sleep(0.5)
 
         with st.expander('🆕 connect to new microverse', expanded=True):
             url = st.text_input('conceptarium url',
@@ -93,7 +92,6 @@ def paint():
                     }]
                 cookie_manager.set(
                     'user_state', user_state, expires_at=datetime.datetime.now() + datetime.timedelta(days=30), key='add')
-                sleep(0.5)
                 st.session_state['microverses'] = user_state['microverses']
 
         custodian_microverse = [
@@ -115,7 +113,7 @@ def paint():
                                 }, headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"})
                                 st.info(
                                     'The microverse has been removed.')
-                                st.experimental_rerun()
+                                # st.experimental_rerun()
 
 
 def default_layout():
@@ -124,7 +122,3 @@ def default_layout():
         'leftColumn': ['navigator', 'ranker'],
         'rightColumn': ['inspector']
     }
-
-
-def get_cookie_manager():
-    return stx.CookieManager()
