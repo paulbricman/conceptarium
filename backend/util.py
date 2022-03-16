@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from tkinter import E
 from PIL import Image
 import io
 import secrets
