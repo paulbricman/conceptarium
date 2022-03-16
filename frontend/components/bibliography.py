@@ -19,7 +19,7 @@ def paint():
         for e_idx, e in enumerate(events):
             if 'doi' in e['name']:
                 events[e_idx]['doi'] = e['name']
-            if 'arxiv' in e['name']:
+            elif 'arxiv' in e['name']:
                 if 'abs' in e['name']:
                     events[e_idx]['arxiv_id'] = e['name'].split(
                         'abs')[-1].replace('/', '')
