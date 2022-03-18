@@ -39,10 +39,14 @@ def paint():
                 compiled_bibtex = ''
                 for e in events:
                     if 'doi' in e.keys():
-                        compiled_bibtex += doi_to_bibtex(e['doi']) + '\n\n'
+                        bibtex = doi_to_bibtex(e['doi'])
+                        if bibtex:
+                            compiled_bibtex += bibtex + '\n\n'
                     elif 'arxiv_id' in e.keys():
-                        compiled_bibtex += arxiv_to_bibtex(
-                            e['arxiv_id']) + '\n\n'
+                        bibtex = arxiv_to_bibtex(
+                            e['arxiv_id'])
+                        if bibtex:
+                            compiled_bibtex += bibtex + '\n\n'
 
                 st.code(compiled_bibtex)
         elif events != []:
