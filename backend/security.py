@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+import os
 
 
 def auth(token, compact=False):
@@ -8,19 +9,23 @@ def auth(token, compact=False):
             'custodian': False
         }
 
-    path = Path('..') / 'knowledge' / 'records.json'
+    knowledge_base_path = Path('..') / 'knowledge'
+    records_path = knowledge_base_path / 'records.json'
 
-    if not path.exists():
+    if not records_path.exists():
+        if not knowledge_base_path.exists():
+            os.mkdir(knowledge_base_path)
+
         records = {
             'custodian_token': token
         }
-        json.dump(records, open(path, 'w'))
+        json.dump(records, open(records_path, 'w'))
 
         return {
             'custodian': True
         }
     else:
-        records = json.load(open(path))
+        records = json.load(open(records_path))
 
         if records['custodian_token'] == token:
             return {
