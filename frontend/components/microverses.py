@@ -57,13 +57,13 @@ def paint():
                     st.code(display_text)
 
                     if e['auth']['custodian']:
-                        if st.button('create archive'):
+                        if st.button('create archive', key=e):
                             archive = requests.get(e['url'] + '/dump',
                                                    headers={'Authorization': f"Bearer {e['token']}"}).content
                             st.download_button(
                                 'download archive', data=archive, file_name='knowledge.zip')
 
-                    if st.button('remove', key=(e, e_idx), help='Remove this source of thoughts.'):
+                    if st.button('remove', key=e, help='Remove this source of thoughts.'):
                         user_state['microverses'].remove(e)
                         cookie_manager.delete('user_state')
                         cookie_manager.set(
@@ -107,13 +107,12 @@ def paint():
                             if e['modality'] == 'text':
                                 st.success(e['content'])
 
-                            if st.button('disable', help='Disable the access to this microverse.'):
+                            if st.button('disable', help='Disable the access to this microverse.', key=e):
                                 requests.get(custodian_microverse[0]['url'] + '/microverse/remove', params={
                                     'microverse': e['token']
                                 }, headers={'Authorization': f"Bearer {custodian_microverse[0]['token']}"})
                                 st.info(
                                     'The microverse has been removed.')
-                                # st.experimental_rerun()
 
 
 def default_layout():
